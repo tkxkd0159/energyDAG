@@ -3,7 +3,7 @@ Sq = 3 # sigma, std. percentage
 Cp = 5 # Conf. cycle, avg. seconds
 Cq = 0.5 # Conf. cycle, std. seconds
 
-Runtime = 600 # seconds
+Runtime = 5 # seconds
 MaxkW = 50 # per power line
 TxCycle = 0.5 # transaction issuance cycle (second)
 AlertInterval = 50 # '~seconds passed' alert cycle (second)

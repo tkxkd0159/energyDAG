@@ -1,2 +1,4 @@
-/results
-/results2
+/result*
+results*
+.vscode
+*.pyc
