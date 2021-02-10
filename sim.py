@@ -36,10 +36,10 @@ class Sim:
 
     Parameters
     ----------
-    rap : Race attack probability,
-    rap_itv : Race attack interval,
-    lra (bool): Long range attack,
-    bc_delay : Broadcasting delay,
+    rap : Race attack probability
+    rap_itv : Race attack interval
+    lra (bool): Long range attack
+    bc_delay : Broadcasting delay
     """
     def __init__(self, rap=0.5, rap_itv=0.0001, lra=False, bc_delay=0.5):
 
@@ -213,10 +213,10 @@ class Sim:
                 vld_result = m.validate(self.tx, sim.time_cursor)
 
                 prts, t_work = vld_result
-                t_vld_end = sim.time_cursor + t_work
+                t_vldd = sim.time_cursor + t_work
                 sim.log('Validation', f'{self.tx.idx} -> {[prt.idx for prt in self.tx.prts]}')
-                self.tx.t_vldd = t_vld_end
-                sim.events[t_vld_end + sim.bc_delay] = Sim.TxArriv.TxBroadcast(self.tx)
+                self.tx.t_vldd = t_vldd
+                sim.events[t_vldd + sim.bc_delay] = Sim.TxArriv.TxBroadcast(self.tx)
 
 
 
