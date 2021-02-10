@@ -5,6 +5,3 @@ a = {
 }
 
 print('task' in a['todo1'])
-
-import random
-print(random.random())

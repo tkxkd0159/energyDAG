@@ -182,4 +182,4 @@ class Miner:
                     anc.is_conf = True
 
         m.dag.txs[tx.idx] = tx
-        return (prts ,t_work)
+        return (prts, t_work)

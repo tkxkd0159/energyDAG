@@ -5,7 +5,7 @@ from component import Tx, Miner, GENESIS_NUM
 from gui import GUI
 
 
-VERBOSE = True      # debug
+VERBOSE = False      # debug
 GUIon = False
 
 
@@ -90,7 +90,7 @@ class Sim:
 
 
     def log(self, event_name, suffix=''):
-        if False:
+        if VERBOSE:
             print(f'{self.time_cursor:.3f}|{event_name:^15}|{suffix:^20}')
 
     def run(self, style, miner_num, tx_reuse=False, folder='.', suffix=''):
@@ -119,7 +119,7 @@ class Sim:
 
 
         while True:
-            if self.time_cursor> t_alert:
+            if self.time_cursor > t_alert:
                 print(f'{t_alert} secs passed')
                 t_alert += ALERT_INTVL
             self.time_cursor = min(self.events.keys())
