@@ -1,6 +1,5 @@
 import random
-import os
-
+from pathlib import Path, PurePath
 from component import Tx, Miner, GENESIS_NUM
 from gui import GUI
 
@@ -93,11 +92,12 @@ class Sim:
         if VERBOSE:
             print(f'{self.time_cursor:.3f}|{event_name:^15}|{suffix:^20}')
 
-    def run(self, style, miner_num, tx_reuse=False, folder='.', suffix=''):
+    def run(self, style, miner_num, tx_reuse=False, folder='results', suffix=''):
 
-        if not os.path.exists('results_new/' + folder):
-            os.makedirs('results_new/' + folder)
-        file_name = f'{folder}/m{miner_num}_{style}{suffix}'
+        data_dir = PurePath(PurePath(__file__).parent, folder)
+        if not Path(data_dir).exists():
+            Path(data_dir).mkdir()
+        file_name = f'm{miner_num}_{style}{suffix}'
 
         self.miners = [Miner(i, style) for i in range(miner_num)]
 
@@ -113,7 +113,7 @@ class Sim:
         # pre-schedule tx arrivals
         self.events.update({tx.t_arriv:self.TxArriv(tx) for tx in self.txs.values() if tx.idx >= 0})
 
-        print(f'Simulation begin : results_new/{file_name}')
+        print(f'Simulation begin : {folder}/{file_name}')
         t_alert = ALERT_INTVL
         self.time_cursor = 0
 
@@ -135,7 +135,7 @@ class Sim:
             if not self.events: break
 
         print("Writing...")
-        with open(f'results_new/{file_name}.txt', 'w') as f:
+        with open(f'{data_dir}\{file_name}.txt', 'w') as f:
             whole_log = []
             for tx in self.txs.values():
                 if tx.idx <0: continue
@@ -164,7 +164,7 @@ class Sim:
             if not same_depth_txs: break
             width_info.append(len(same_depth_txs))
             depth_cursor += 1
-        with open(f'results_new/{file_name}_width.txt', 'w') as f:
+        with open(f'{data_dir}\{file_name}_width.txt', 'w') as f:
             f.write('\n'.join(map(str, width_info)))
 
         print("Done")

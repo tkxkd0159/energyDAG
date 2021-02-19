@@ -1,0 +1,11 @@
+{
+
+    "executionEnvironments": [
+      {
+        "root": "sim"
+      },
+      {
+        "root": "."
+      }
+    ]
+  }
