@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_restful import Resource, Api, abort, reqparse
-from requests import put, get
-app = Flask (__name__)
+
+
+app = Flask(__name__)
 
 ## Use @app.route
 
@@ -13,8 +14,11 @@ def hello_world():
 def hello_user(user_name):
     return f'Hello, {user_name}'
 
-## Use flask Api
+def test_url():
+    return f'Hello test  url', 200
+app.add_url_rule('/testall/ljs', 'test_url', test_url)
 
+## Use flask Api
 api = Api(app)
 
 TODOS = {
@@ -48,11 +52,11 @@ class Todo(Resource):
         TODOS[todo_id] = task
         return task, 201
 
+api.add_resource(Todo, '/todos/<todo_id>') # URL Router에 mapping
 
 
 class TodoList(Resource):
     def get(self):
-
         return TODOS
 
     def post(self):
@@ -60,13 +64,11 @@ class TodoList(Resource):
         todo_id = int(max(TODOS.keys()).lstrip('todo')) + 1
         todo_id = f'todo{todo_id}'
         TODOS[todo_id] = {'task': args['task']}
-        return TODOS[todo_id], 201
+        return TODOS[todo_id], 200
+
+api.add_resource(TodoList, '/todos', '/todos/') # URL Router에 mapping
 
 
-
-## URL Router에 mapping
-api.add_resource(TodoList, '/todos', '/todos/')
-api.add_resource(Todo, '/todos/<todo_id>')
 
 
 if __name__ == "__main__":
@@ -74,8 +76,8 @@ if __name__ == "__main__":
 
 
 """
-?    curl http://localhost:5000/todos
-?    curl http://localhost:5000/todos/todo2 -X DELETE -v // Delete a task
-?    curl http://localhost:5000/todos -d "task=something new" -v   // Add new task(POST), args['task'] = 'something new'
-?    curl http://localhost:5000/todos/todo3 -d "task=something different" -X PUT -v // Update a task
+*    curl http://localhost:5000/todos
+*    curl http://localhost:5000/todos/todo2 -X DELETE -v // Delete a task
+*    curl http://localhost:5000/todos -d "task=something new" -v   // Add new task(POST), args['task'] = 'something new'
+*    curl http://localhost:5000/todos/todo3 -d "task=something different" -X PUT -v // Update a task
 """
