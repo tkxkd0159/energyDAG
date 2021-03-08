@@ -4,8 +4,8 @@ from component import Tx, Miner, GENESIS_NUM
 from gui import GUI
 
 
-VERBOSE = False      # debug
-GUIon = False
+VERBOSE = True      # debug
+GUIon = True
 
 
 RUN_TIME = 5        # seconds
@@ -16,7 +16,7 @@ REVLD_INTVL = 3 # Revalidational interval (seconds)
 # arrival set
 UNI_START = 0
 UNI_END = 1
-POI_MEAN = 10
+POI_MEAN = 5
 CONST_TIME = 1
 
 
@@ -123,15 +123,15 @@ class Sim:
                 print(f'{t_alert} secs passed')
                 t_alert += ALERT_INTVL
             self.time_cursor = min(self.events.keys())
-            if self.time_cursor > RUN_TIME:
-                break
+            # if self.time_cursor > RUN_TIME:
+            #     break
 
             deque_event = self.events.pop(self.time_cursor)
             deque_event.do(self)
 
             if GUIon:
                 k = gui.show(self.miners[0], style, self.time_cursor) # miner 0's dag
-                if k == 1: return
+                if k == True: return
             if not self.events: break
 
         print("Writing...")
@@ -225,4 +225,4 @@ class Sim:
 
 if __name__ == "__main__":
     s = Sim()
-    s.run('PWGR', 10)
+    s.run('PWGR', 5)
