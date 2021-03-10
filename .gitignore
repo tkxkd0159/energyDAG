@@ -2,3 +2,10 @@
 results*
 .vscode
 *.pyc
+
+
+# leveldb
+/db
+db/*.log
+db/LOG
+db/LOG.old
