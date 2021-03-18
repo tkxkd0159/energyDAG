@@ -1,5 +1,4 @@
-from lib import component as c
-
+from lib.crypto import createPrivateKey
 
 if __name__ == "__main__":
-    print("main")
+    print(createPrivateKey())
