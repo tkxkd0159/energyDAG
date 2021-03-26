@@ -18,3 +18,10 @@ a = blocks()
 b = json.dumps(a.getChain)
 print(b)
 
+#
+print(bytes.fromhex("7E7F"))
+
+a = bytearray(b'2F')
+print(int.from_bytes(a, byteorder="little")) # 0x4632
+print(int.from_bytes(a, byteorder="big"))    # 0x3246
+print(bytes.fromhex("0A"))
