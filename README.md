@@ -8,6 +8,8 @@ peer table은 Distributed Hash Table(DHT)로 구성 시도해보자. (이더리�
 The timestamp of TX is the time which the TX was generated
 The timestamp of Block is the time which The miner start to calculate nonce
 
+트랜잭션이 ledger에 포함되기 전까지 전파/생성된 TX들을 저장해놓을 mempool이 필요함. (어떻게 뽑을 건지도 생각해야함)
+
 ## security
 ### 1) Key stretching
 Do hash function several times
