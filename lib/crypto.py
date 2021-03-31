@@ -41,18 +41,19 @@ def sha256ForTx(*args: str) -> str:
 
 
 def b58encode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
+    if isinstance(v, int):
+        decimal = v
     if isinstance(v, str):
         v = v.encode()
-
     if isinstance(v, bytes):
         origlen = len(v)
         v = v.lstrip(b'\0')
         newlen = len(v)
         pad_len = origlen - newlen
+        decimal = int.from_bytes(v, byteorder='big')  # first byte is MSB
     else:
         pad_len = 0
 
-    decimal = int.from_bytes(v, byteorder='big')  # first byte is MSB
     if decimal == 0:
         return char_set[0:1]
     output = b""
