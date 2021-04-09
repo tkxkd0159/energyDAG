@@ -41,7 +41,9 @@ Bitcoin에서의 51% attack 같은거 -> 해당 플랫폼의 consensus를 제어
 
 ## security
 ### 1) Key stretching
-Do hash function several times to prevent burte-force attack 
+Do hash function several times to prevent burte-force attack  
+#### 1-1) sha-256d
+sha256 twice by "Cryptography Engineering" to make SHA-256 invulnerable to "length-extension" attack
 ### 2) Salt
 Append random string on original data against rainbow table
 
