@@ -41,9 +41,9 @@ Bitcoin에서의 51% attack 같은거 -> 해당 플랫폼의 consensus를 제어
 
 ## security
 ### 1) Key stretching
-Do hash function several times
+Do hash function several times to prevent burte-force attack 
 ### 2) Salt
-append random string on original data
+Append random string on original data against rainbow table
 
 
 ## Wallet
