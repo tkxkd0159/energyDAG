@@ -19,9 +19,9 @@ Dos(Denial-of-service) 공격을 막기 위해 안전장치 필요 -> 최소 하
 
 ## security
 ### 1) Key stretching
-Do hash function several times
+Do hash function several times to prevent burte-force attack 
 ### 2) Salt
-append random string on original data
+append random string on original data against rainbow table
 
 
 ## Wallet
