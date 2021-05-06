@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, abort, reqparse
 
+from lib import param
 
 
 app = Flask(__name__)
@@ -13,20 +14,18 @@ def hello_world():
     return 'Hello, World!'
 
 
-
+# TODO : replace legacy parser to use_args (Schema)
 parser2 = reqparse.RequestParser()
 parser2.add_argument('ver')
 parser2.add_argument('timestamp')
-mydag = {}
 
 class DAG_API(Resource):
     def get(self):
-        return mydag
+        return param.MYDAG
 
     def post(self):
         args = parser2.parse_args()
-        mydag.update(args
-        )
+        param.MYDAG.update(args)
         return 200
 
 

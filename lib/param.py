@@ -5,3 +5,7 @@ BITCOIN_ALPHABET = b'123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 ## dag.py
 DIFFICULTY = 0
+
+
+
+MYDAG = {}

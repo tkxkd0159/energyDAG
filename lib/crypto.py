@@ -6,25 +6,21 @@
 # cofactor h = 01
 # * secp256k1 : y^2 = x^3 + 7
 
-from secrets import token_hex
-from binascii import b2a_hex
 
 from typing import Union
 from os import urandom
 from functools import reduce, lru_cache
 from hashlib import sha256, sha3_256, blake2s
-from ecdsa import SigningKey, VerifyingKey, SECP256k1
+from ecdsa import SigningKey, VerifyingKey, NIST256p
 
-from param import BITCOIN_ALPHABET
-
+from .param import BITCOIN_ALPHABET
 
 
 def createPrivateKey():
-    return SigningKey.generate(curve=SECP256k1)
+    return SigningKey.generate(curve=NIST256p, hashfunc=sha256)
 
 def createPublicKey(pvtK: SigningKey):
     return pvtK.verifying_key
-
 
 def createAddr(pubK: VerifyingKey):
     hash1 = sha3_256()
@@ -33,12 +29,12 @@ def createAddr(pubK: VerifyingKey):
     hash2.update(hash1.digest())
     return hash2.hexdigest()
 
+# ! Deprecated method, do not use
 def sha256ForTx(*args: str) -> str:
     res = reduce(lambda acc, cur: acc+cur, args)
     hash = sha3_256()
     hash.update(res.encode())
     return hash.hexdigest()
-
 
 def b58encode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
     if isinstance(v, int):
@@ -62,6 +58,7 @@ def b58encode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> 
         output = char_set[idx:idx+1] + output
 
     return char_set[0:1] * pad_len + output
+
 
 def b58decode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
     if not isinstance(v, int):
@@ -90,6 +87,7 @@ def b58decode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> 
         output.append(remain)
 
     return b'\0' * pad_len + bytes(reversed(output))
+
 
 
 def b58encodeWithChecksum(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
