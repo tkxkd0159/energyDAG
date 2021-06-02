@@ -1,8 +1,9 @@
 from flask import Flask, request
 from flask_restful import Resource, Api, abort, reqparse
+from webargs.flaskparser import use_args
 
-from lib import param
-
+from lib.param import MYDAG
+from rest_schema import TxSchema
 
 app = Flask(__name__)
 api = Api(app)
@@ -14,22 +15,19 @@ def hello_world():
     return 'Hello, World!'
 
 
-# TODO : replace legacy parser to use_args (Schema)
-parser2 = reqparse.RequestParser()
-parser2.add_argument('ver')
-parser2.add_argument('timestamp')
+class DAG_API2(Resource):
 
-class DAG_API(Resource):
     def get(self):
-        return param.MYDAG
+        return MYDAG
 
-    def post(self):
-        args = parser2.parse_args()
-        param.MYDAG.update(args)
+    @use_args(TxSchema())
+    def post(self, args):
+        MYDAG['test'] = args
+        print(args)
+
         return 200
 
-
-api.add_resource(DAG_API, '/dag')
+api.add_resource(DAG_API2, '/dag2')
 
 if __name__ == "__main__":
     app.run(debug=True)
