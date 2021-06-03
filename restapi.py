@@ -3,6 +3,7 @@ from flask_restful import Resource, Api, abort, reqparse
 from webargs.flaskparser import use_args
 
 from lib.param import MYDAG
+from lib.dag import TXHASH
 from rest_schema import TxSchema
 
 app = Flask(__name__)
@@ -14,20 +15,32 @@ api = Api(app)
 def hello_world():
     return 'Hello, World!'
 
+def abort_if_dag_not_exist():
+    if MYDAG == {}:
+        abort(404, message="DAG doesn't exist")
 
-class DAG_API2(Resource):
+def abort_if_tx_not_exist(txid: TXHASH):
+    if txid not in MYDAG:
+        abort(404, message=f"TXID << {txid} >> doesn't exist")
 
-    def get(self):
-        return MYDAG
+class DAG_API(Resource):
+
+    def get(self, txid=0):
+        if txid == 0:
+            abort_if_dag_not_exist()
+            return MYDAG
+        else:
+            abort_if_tx_not_exist(txid)
+            return MYDAG[txid]
 
     @use_args(TxSchema())
     def post(self, args):
-        MYDAG['test'] = args
+        MYDAG["mytxid"] = args
         print(args)
 
         return 200
 
-api.add_resource(DAG_API2, '/dag2')
+api.add_resource(DAG_API, '/dag', '/dag/<txid>')
 
 if __name__ == "__main__":
     app.run(debug=True)

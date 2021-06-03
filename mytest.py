@@ -42,7 +42,7 @@ class Network(unittest.TestCase):
         self.mytx = TX()
         self.url = "http://127.0.0.1:5000/dag"
         self.header = {'Content-Type': 'application/json'}
-        self.keyset = ['mytxid']
+        self.keyset = ["mytxid"]
 
     def test_1_post(self):
         self.assertEqual(posttx(self.mytx, self.url, self.header), 200)
@@ -58,3 +58,4 @@ class Network(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()   # python -m unittest -v mytest
+                      # python -m unittest -v mytest.Crypto
