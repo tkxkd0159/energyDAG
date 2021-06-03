@@ -70,7 +70,9 @@ class TX:
         self.clds = list(self.clds)
         self.conflTX = list(self.conflTX)
         self.validators = list(self.validators)
-        self.status = self.status.value
+
+        if isinstance(self.status, Status):
+            self.status = self.status.value
 
 
         return vars(self)
@@ -83,9 +85,10 @@ class TX:
         obj.conflTX = set(obj.conflTX)
         obj.validators = set(obj.validators)
 
-        for status in Status:
-            if obj.status == status.value:
-                obj.status = status
+        status_map = {1: Status.pending, 2: Status.fixed, 3: Status.conflicted, 4: Status.stale}
+
+        if isinstance(obj.status, int):
+            obj.status = status_map[obj.status]
 
 
         return obj

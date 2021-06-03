@@ -40,9 +40,9 @@ class Crypto(unittest.TestCase):
 class Network(unittest.TestCase):
     def setUp(self):
         self.mytx = TX()
-        self.url = "http://127.0.0.1:5000/dag2"
+        self.url = "http://127.0.0.1:5000/dag"
         self.header = {'Content-Type': 'application/json'}
-        self.keyset = ['test']
+        self.keyset = ['mytxid']
 
     def test_1_post(self):
         self.assertEqual(posttx(self.mytx, self.url, self.header), 200)
