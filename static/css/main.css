@@ -1585,7 +1585,6 @@ button,
       position: absolute;
       right: 1.5em;
       top: 0;
-      vertical-align: middle;
       width: 36px; }
     input[type="submit"].next:before,
     input[type="reset"].next:before,
@@ -1981,7 +1980,7 @@ button,
       line-height: inherit;
       padding: 0 0.75em;
       position: relative;
-      vertical-align: middle; }
+}
       #header nav a:last-child {
         padding-right: 1.5em; }
       #header nav a[href="#menu"] {
@@ -1997,7 +1996,6 @@ button,
           position: absolute;
           right: 1.5em;
           top: 0;
-          vertical-align: middle;
           width: 24px; }
         #header nav a[href="#menu"]:after {
           -moz-transition: opacity 0.2s ease-in-out;
@@ -2368,7 +2366,6 @@ button,
     text-align: right;
     text-indent: 8em;
     top: 0;
-    vertical-align: middle;
     white-space: nowrap;
     width: 8em; }
     #menu .close:before, #menu .close:after {
