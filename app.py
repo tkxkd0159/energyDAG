@@ -2,12 +2,17 @@ from flask import Flask, request, render_template
 from flask_restful import Resource, Api, abort, reqparse
 from webargs.flaskparser import use_args
 from werkzeug.utils import secure_filename
+from front import front
 
 from lib.param import MYDAG
 from lib.dag import TXHASH
 from rest_schema import TxSchema
 
+
 app = Flask(__name__)
+app.config["SECRET_KEY"] = 'TPdlwotmd4aLWRbyVq8zu9v82dWYW1'
+app.config['UPLOAD_FOLDER'] = './download'
+app.register_blueprint(front)
 api = Api(app)
 
 ## Use @app.route
@@ -38,7 +43,6 @@ class DAG_API(Resource):
     @use_args(TxSchema())
     def post(self, args):
         MYDAG["mytxid"] = args
-        print(args)
 
         return 200
 
