@@ -1,0 +1,20 @@
+{
+
+    "executionEnvironments": [
+      {
+        "root": "sim",
+        "extraPaths": [
+          "."
+        ]
+      },
+      {
+        "root": "lib",
+        "extraPaths": [
+          "."
+        ]
+      },
+      {
+        "root": "."
+      }
+    ]
+  }

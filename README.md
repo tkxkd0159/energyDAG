@@ -48,6 +48,7 @@ sha256 twice by "Cryptography Engineering" to make SHA-256 invulnerable to "leng
 Append random string on original data against rainbow table
 
 
+
 ## Wallet
 ECDSA = (Private Key : 32 bytes), (Public Key : 64 bytes)  
 Address = 16 bytes, (sha3_256 -> blake2s)

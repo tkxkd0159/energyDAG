@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <form
+            action="http://127.0.0.1:5000/upload"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            <input type="file" id="uploadInput" name="file" multiple />
+            <p>
+                selected files: <span id="fileNum">0</span>  &nbsp;&nbsp;&nbsp;&nbsp; total size: <span id="fileSize">0</span> <br>
+                <p id="myfiles">File lists:</p>
+            </p>
+
+            <input type="submit" />
+        </form>
+    </body>
+
+    <script src="../static/js/myweb.js"></script>
+</html>
