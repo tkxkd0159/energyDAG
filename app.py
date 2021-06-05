@@ -1,6 +1,7 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_restful import Resource, Api, abort, reqparse
 from webargs.flaskparser import use_args
+from werkzeug.utils import secure_filename
 
 from lib.param import MYDAG
 from lib.dag import TXHASH
@@ -11,10 +12,6 @@ api = Api(app)
 
 ## Use @app.route
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
 def abort_if_dag_not_exist():
     if MYDAG == {}:
         abort(404, message="DAG doesn't exist")
@@ -22,6 +19,11 @@ def abort_if_dag_not_exist():
 def abort_if_tx_not_exist(txid: TXHASH):
     if txid not in MYDAG:
         abort(404, message=f"TXID << {txid} >> doesn't exist")
+
+@app.route('/', methods=['GET'])
+def dag_index():
+    if request.method == 'GET':
+        return render_template('index.html')
 
 class DAG_API(Resource):
 
