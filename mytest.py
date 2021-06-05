@@ -1,5 +1,5 @@
 import unittest
-from json import dumps, loads
+from json import dumps
 import requests
 
 from lib.dag import TX, DAG
@@ -19,7 +19,7 @@ def posttx(tx, url, header):
 
     # curl -d @request.json -H "Content-Type: application/json" https://my.co.kr
     r = requests.post(url=url, headers=header, data=payload)
-    return int(r.text)
+    return r.status_code
 
 def postfile(url):
     flist = [open('test_rest.json', 'rb'), open('pyrightconfig.json', 'rb')]
@@ -29,8 +29,7 @@ def postfile(url):
     for f in flist:
         f.close()
 
-    print(r.text)
-    return 200
+    return r.status_code
 
 def gettx(url, key) -> dict:
     tx = requests.get(url=url).json()

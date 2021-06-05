@@ -9,6 +9,7 @@ class TxSchema(Schema):
     clds = fields.List(fields.Field())
     height = fields.Int()
     id = fields.Str()
+    sign = fields.Str()
     data = fields.List(fields.Str())
     trusty = fields.Int()
     good = fields.Int()

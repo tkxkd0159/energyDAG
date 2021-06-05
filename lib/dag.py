@@ -9,7 +9,7 @@ from .crypto import createPrivateKey, createPublicKey, sha3_256
 
 TX_ = TypeVar("TX_")
 TXHASH = TypeVar("TXHASH", str, bytes)
-SIGN = NewType("SIGN", str)
+TXID = NewType("TXID", str)
 
 class Status(Enum):
     pending = auto()
@@ -25,7 +25,8 @@ class TX:
     prts: set[TX_] = field(default_factory=set)
     clds: set[TX_] = field(default_factory=set)
     height: int = 0
-    id: SIGN = ""
+    id: TXID = ""
+    sign: str = ""
 
 
     data: list[str] = field(default_factory=list)
@@ -93,19 +94,20 @@ class TX:
 
         return obj
 
-    def hash(self) -> bytes:
+    def hash(self, make_txid=False) -> bytes:
         serialTX = deepcopy(self.serialize())
         serialTX.pop("id")
+        serialTX.pop("sign")
         myhash = sha3_256()
         myhash.update(json.dumps(serialTX).encode())
+        if make_txid:
+            self.id = myhash.digest().hex()
         return myhash
 
     def addSign(self, pvtK):
         txhash = self.hash().digest()
         signature = pvtK.sign_deterministic(txhash)
-        self.id = signature.hex()
-
-
+        self.sign = signature.hex()
 
 
 class DAG:
