@@ -1,5 +1,5 @@
 import sys
-from os import path, listdir
+from os import path, scandir
 
 from flask import Blueprint, render_template, abort, request, redirect, flash, current_app, send_from_directory
 from flask.helpers import send_from_directory, url_for
@@ -13,6 +13,22 @@ ALLOWED_EXTENSIONS = {'txt', 'json', 'md'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def search_files(dir) -> list:
+    scope_list = scandir(dir)
+    filepaths = []
+    filepaths_sub = []
+    for f in scope_list:
+        if f.is_dir():
+            filepaths_sub = search_files(f)
+        else:
+            newf = f.path.replace('\\', '/')
+            newf = newf.lstrip('/download')
+            filepaths.append(newf)
+
+    return filepaths + filepaths_sub
+
 
 @front.route('/<page>')
 def show(page):
@@ -46,15 +62,19 @@ def upload_file():
         return render_template('upload.html')
 
 @front.route('/download')
-@front.route('/download/<filename>')
+@front.route('/download/<path:filename>')
 def download_file(filename=None):
     if filename is not None:
         return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
     else:
-        file_list = []
-        for f in listdir("./download"):
-            file_list.append(f)
-        return render_template('file.html', files=file_list)
+        filepaths = search_files('download')
+        file_tuple = []
+        for f in filepaths:
+            if "/" in f:
+                file_tuple.append((f, f.rsplit("/", 1)[1]))
+            else:
+                file_tuple.append((f, f))
+        return render_template('file.html', paths=file_tuple)
 
 
 

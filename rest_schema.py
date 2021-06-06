@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields
-from lib.dag import TX
+from kudag.dag import TX
 
 
 class TxSchema(Schema):

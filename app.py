@@ -1,10 +1,10 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, escape
 from flask_restful import Resource, Api, abort
 from webargs.flaskparser import use_args
 from front import front
 
-from lib.param import MYDAG
-from lib.dag import TXHASH
+from kudag.param import MYDAG
+from kudag.dag import TXHASH
 from rest_schema import TxSchema
 
 
@@ -46,6 +46,10 @@ class DAG_API(Resource):
         return 200
 
 api.add_resource(DAG_API, '/dag', '/dag/<txid>')
+
+@app.route('/path/<path:subpath>')
+def show_subpath(subpath):
+    return f'Subpath {escape(subpath)}'
 
 if __name__ == "__main__":
     app.run(debug=True)
