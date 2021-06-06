@@ -2,7 +2,7 @@ import unittest
 from json import dumps
 import requests
 
-from lib.dag import TX
+from kudag.dag import TX
 
 
 
@@ -15,7 +15,7 @@ def posttx(tx, url, header):
     return r.status_code
 
 def postfile(url):
-    flist = [open('test_rest.json', 'rb'), open('pyrightconfig.json', 'rb')]
+    flist = [open('test/test_rest.json', 'rb'), open('pyrightconfig.json', 'rb')]
     myfiles = [('file', flist[0]), ('file', flist[1])]
     r = requests.post(url=url, files=myfiles)
 

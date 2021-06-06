@@ -1,7 +1,7 @@
 import unittest
 
-from lib.dag import TX, DAG
-from lib.crypto import createPublicKey, createPrivateKey
+from kudag.dag import TX, DAG
+from kudag.crypto import createPublicKey, createPrivateKey
 
 class Crypto(unittest.TestCase):
     def setUp(self) -> None:

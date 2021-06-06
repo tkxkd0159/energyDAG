@@ -16,3 +16,6 @@ db/LOG.old
 *.css.map
 *.sass.map
 *.scss.map
+
+# setuptools
+*.egg-info
