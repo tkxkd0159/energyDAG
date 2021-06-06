@@ -15,6 +15,12 @@
       },
       {
         "root": "."
+      },
+      {
+        "root": "test",
+        "extraPaths": [
+          "."
+        ]
       }
     ]
   }

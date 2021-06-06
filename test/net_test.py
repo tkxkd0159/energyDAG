@@ -2,16 +2,9 @@ import unittest
 from json import dumps
 import requests
 
-from lib.dag import TX, DAG
-from lib.crypto import createPublicKey, createPrivateKey
+from lib.dag import TX
 
-def keygen():
-    mykey = createPrivateKey()
-    myvkey = createPublicKey(mykey)
-    test = TX()
-    test.addSign(mykey)
 
-    return myvkey.verify(bytes.fromhex(test.id), test.hash().digest())
 
 def posttx(tx, url, header):
     myjson = dumps(tx.serialize())
@@ -35,15 +28,6 @@ def gettx(url, key) -> dict:
     tx = requests.get(url=url).json()
     return tx[key]
 
-class Crypto(unittest.TestCase):
-    def setUp(self) -> None:
-        pass
-
-    def tearDown(self) -> None:
-        pass
-
-    def test_keygen(self):
-        self.assertTrue(keygen())
 
 
 
