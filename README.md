@@ -1,3 +1,11 @@
+# setting
+
+```
+pip install -r requirements.txt
+pip install -e kudag
+
+```
+
 # Implementation
 
 P2P network에서는 처음에 본인이 주변 노드 정보 가지고 있고 gossip형태로 전파한다.  
