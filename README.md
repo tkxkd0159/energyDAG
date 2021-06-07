@@ -8,6 +8,21 @@ pip install -e kudag
 블록체인처럼 초반에 initialization해서 데이터 접근이 빠른 state DB를 만들어 두는게 중요  
 이후 ledger가 갱신될 때마다 state DB도 갱신 -> 상대적으로 오버헤드 적음  
 TODO : **P2P Websocket, Wallet, Peer table,  DB(실제 데이터 삽입), 각종 DAG관련 기능**
+
+# Smart Contract
+```python
+md5_hash = hashlib.md5()
+
+a_file = open("test.txt", "rb")
+content = a_file.read()
+md5_hash.update(content)
+
+digest = md5_hash.hexdigest()
+print(digest)
+```
+특정 폴더에 개별 스마트 컨트랙트를 개별 파일로 저장, 이에 대한 해쉬 값을 set으로 구성  
+해당 set에 그 해쉬 값 없으면 스마트 컨트랙트를 개별 `.py`로 저장
+
 # Implementation
 
 P2P network에서는 처음에 본인이 주변 노드 정보 가지고 있고 gossip형태로 전파한다.  
