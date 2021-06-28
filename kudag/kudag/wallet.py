@@ -3,8 +3,15 @@ from uuid import uuid4
 
 from .crypto import createPrivateKey, createPublicKey, createAddr
 
-def initWallet():
-    pass
+
+class Wallet:
+    def __init__(self):
+        pass
+
+    def init_wallet(self):
+        pass
+
+
 
 @dataclass
 class UTXO:

@@ -13,7 +13,7 @@ from functools import reduce, lru_cache
 from hashlib import sha256, sha3_256, blake2s
 from ecdsa import SigningKey, VerifyingKey, NIST256p
 
-from .param import BITCOIN_ALPHABET
+from kudag.param import BITCOIN_ALPHABET
 
 
 def createPrivateKey():

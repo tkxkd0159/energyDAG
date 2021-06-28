@@ -1,31 +1,31 @@
 from dataclasses import dataclass, field
 from time import time
-from typing import TypeVar, NewType
+from typing import NewType
 from enum import Enum, auto
 import json
 from copy import deepcopy
 
-from .crypto import createPrivateKey, createPublicKey, sha3_256
+from kudag.crypto import sha3_256
+from kudag.db import db
 
-TX_ = TypeVar("TX_")
-TXHASH = TypeVar("TXHASH", str, bytes)
-TXID = NewType("TXID", str)
+Tx = NewType("Tx")
+TxHash = NewType("TxHash", str, bytes)
+TxID = NewType("TxID", str)
 
 class Status(Enum):
     pending = auto()
-    fixed = auto()
+    confirmed = auto()
     conflicted = auto()
     stale = auto()
 
 @dataclass
 class TX:
 
-    ver: int = 1
     timestamp: float = time()
-    prts: set[TX_] = field(default_factory=set)
-    clds: set[TX_] = field(default_factory=set)
+    prts: set[Tx] = field(default_factory=set)
+    clds: set[Tx] = field(default_factory=set)
     height: int = 0
-    id: TXID = ""
+    id: TxID = ""
     sign: str = ""
 
 
@@ -33,13 +33,11 @@ class TX:
 
     # Parameter for finality
     trusty: int = 0
-    good: int = 0
-    bad: int = 0
 
     # Validation
     status: int = Status.pending
     nonce: int = 0
-    conflTX: set[TX_] = field(default_factory=set) # conflicted TX with this TX
+    conflTX: set[Tx] = field(default_factory=set) # conflicted TX with this TX
     tArriv: int = 0
     tConfl: int = 0
     tConf: int = 0
@@ -79,14 +77,14 @@ class TX:
         return vars(self)
 
     @staticmethod
-    def deserialize(serialTX) -> TX_:
+    def deserialize(serialTX: dict) -> Tx:
         obj = TX(**json.loads(serialTX))
         obj.prts = set(obj.prts)
         obj.clds = set(obj.clds)
         obj.conflTX = set(obj.conflTX)
         obj.validators = set(obj.validators)
 
-        status_map = {1: Status.pending, 2: Status.fixed, 3: Status.conflicted, 4: Status.stale}
+        status_map = {1: Status.pending, 2: Status.confirmed, 3: Status.conflicted, 4: Status.stale}
 
         if isinstance(obj.status, int):
             obj.status = status_map[obj.status]
@@ -112,4 +110,10 @@ class TX:
 
 class DAG:
     def __init__(self):
-        self.txs: dict[TXHASH, TX] = {}
+        self.txs: dict[TxHash, TX] = {}
+
+    def add_tx(self):
+        pass
+
+    def compare(self):
+        pass
