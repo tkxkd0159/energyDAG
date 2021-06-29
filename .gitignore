@@ -4,11 +4,6 @@ results*
 *.pyc
 
 
-# leveldb
-/db
-db/*.log
-db/LOG
-db/LOG.old
 
 
 ### Sass ###
@@ -19,3 +14,9 @@ db/LOG.old
 
 # setuptools
 *.egg-info
+
+
+# etc
+wallet/
+db/
+state/
