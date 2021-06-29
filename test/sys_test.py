@@ -22,6 +22,9 @@ def keygen():
 
     return myvkey.verify(bytes.fromhex(test.sign), test.hash().digest())
 
+def addrgen():
+    pass
+
 
 if __name__ == '__main__':
     unittest.main()   # python -m unittest -v mytest

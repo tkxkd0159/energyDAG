@@ -52,5 +52,5 @@ class Network(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()   # python -m unittest -v mytest
-                      # python -m unittest -v mytest.Crypto
+    unittest.main()
+                      # python -m unittest -v test/net_test.py
