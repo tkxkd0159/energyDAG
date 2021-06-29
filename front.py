@@ -2,14 +2,14 @@ import sys
 from os import path, scandir
 
 from flask import Blueprint, render_template, abort, request, redirect, flash, current_app, send_from_directory
-from flask.helpers import send_from_directory, url_for
+from flask.helpers import send_from_directory
 from jinja2 import TemplateNotFound
 from werkzeug.utils import secure_filename
 
 
 front = Blueprint('front', __name__, template_folder='templates')
 
-ALLOWED_EXTENSIONS = {'txt', 'json', 'md'}
+ALLOWED_EXTENSIONS = {'txt', 'json', 'md', 'pdf'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

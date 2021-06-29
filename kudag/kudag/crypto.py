@@ -8,7 +8,6 @@
 
 
 from typing import Union
-from os import urandom
 from functools import reduce, lru_cache
 from hashlib import sha256, sha3_256, blake2s
 from ecdsa import SigningKey, VerifyingKey, NIST256p
@@ -16,18 +15,27 @@ from ecdsa import SigningKey, VerifyingKey, NIST256p
 from kudag.param import BITCOIN_ALPHABET
 
 
-def createPrivateKey():
+def createPrivateKey() -> SigningKey:
     return SigningKey.generate(curve=NIST256p, hashfunc=sha256)
 
-def createPublicKey(pvtK: SigningKey):
+def createPublicKey(pvtK: SigningKey) -> VerifyingKey:
     return pvtK.verifying_key
 
-def createAddr(pubK: VerifyingKey):
+def createAddr(pubK: VerifyingKey) -> str:
     hash1 = sha3_256()
     hash1.update(pubK.to_string())
-    hash2 = blake2s(digest_size=16, salt=urandom(8))
+    hash2 = blake2s(digest_size=16)
     hash2.update(hash1.digest())
-    return hash2.hexdigest()
+    addr = b58encodeWithChecksum(hash2.hexdigest())
+    return addr.decode(), hash2
+
+def getPubhashFromAddr(addr: str, checksum=True):
+    if checksum:
+        pubhash = b58decodeWithChecksum(addr)
+    else:
+        pubhash = b58decode(addr)
+
+    return pubhash
 
 # ! Deprecated method, do not use
 def sha256ForTx(*args: str) -> str:
@@ -130,3 +138,13 @@ def _get_base58_decode_map(char_set: bytes) -> dict[int, int]:
         return map
     except Exception as e:
         print(e)
+
+
+if __name__ == "__main__":
+    mypvt = createPrivateKey()
+    mypub = createPublicKey(mypvt)
+    myaddr, pubhash = createAddr(mypub)
+    pubHashFromAddr = b58decodeWithChecksum(myaddr)
+    print(len(pubHashFromAddr))
+    print(len(pubhash.hexdigest()))
+    assert pubhash.hexdigest().encode() == pubHashFromAddr
