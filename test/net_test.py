@@ -2,16 +2,9 @@ import unittest
 from json import dumps
 import requests
 
-from lib.dag import TX, DAG
-from lib.crypto import createPublicKey, createPrivateKey
+from kudag.dag import TX
 
-def keygen():
-    mykey = createPrivateKey()
-    myvkey = createPublicKey(mykey)
-    test = TX()
-    test.addSign(mykey)
 
-    return myvkey.verify(bytes.fromhex(test.id), test.hash().digest())
 
 def posttx(tx, url, header):
     myjson = dumps(tx.serialize())
@@ -22,7 +15,7 @@ def posttx(tx, url, header):
     return r.status_code
 
 def postfile(url):
-    flist = [open('test_rest.json', 'rb'), open('pyrightconfig.json', 'rb')]
+    flist = [open('test/test_rest.json', 'rb'), open('pyrightconfig.json', 'rb')]
     myfiles = [('file', flist[0]), ('file', flist[1])]
     r = requests.post(url=url, files=myfiles)
 
@@ -35,15 +28,6 @@ def gettx(url, key) -> dict:
     tx = requests.get(url=url).json()
     return tx[key]
 
-class Crypto(unittest.TestCase):
-    def setUp(self) -> None:
-        pass
-
-    def tearDown(self) -> None:
-        pass
-
-    def test_keygen(self):
-        self.assertTrue(keygen())
 
 
 
@@ -68,5 +52,5 @@ class Network(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()   # python -m unittest -v mytest
-                      # python -m unittest -v mytest.Crypto
+    unittest.main()
+                      # python -m unittest -v test/net_test.py

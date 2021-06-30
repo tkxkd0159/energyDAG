@@ -44,14 +44,14 @@
                                              {% endif %}
 
 
-                                         {% if files %}
+                                         {% if paths %}
                                          <header class="major">
                                             <h1>List of Repo's files</h1>
                                         </header>
 
                                          <ul>
-                                             {% for myf in files %}
-                                              <li><a href="{{ url_for('front.ftp_static', filename=myf) }}"> {{ myf }} </a>  </li>
+                                             {% for path, file in paths %}
+                                              <li><a href="{{ url_for('front.ftp_static', filename=path) }}"> {{ file }} </a>  </li>
                                               {% endfor %}
                                          </ul>
                                           {% endif %}

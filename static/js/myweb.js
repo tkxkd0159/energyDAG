@@ -46,11 +46,11 @@ function updateSize() {
     document.getElementById("fileNum").innerHTML = nFiles;
     document.getElementById("fileSize").innerHTML = sOutput;
 
-    console.log(oFiles)
-    console.log(fileNames);
+    console.log(fileNames)
+
+    document.getElementById("myfiles").innerHTML = "File lists: <br>";
     for (let file of fileNames) {
         document.getElementById("myfiles").innerHTML += `<span>${file}</span><br>`;
-
     }
 }
 
