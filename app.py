@@ -1,26 +1,44 @@
 import sys
+from pathlib import Path
 from flask import Flask, request, render_template, escape, redirect
 from flask_cors import CORS
 from flask_restful import Resource, Api, abort
 from webargs.flaskparser import use_args
 
-from front import front
 from kudag.dag import TxHash, DAG, TX
 from kudag.db import init_db, init_state_db
 from rest_schema import TxSchema
 
+from front import front
+from auth import auth
+from rdb import init_dbapp
 
 # flask run
+try:
+    MY_DAG = DAG(init_db())
+    MY_DAG.load_dag()
+except:
+    pass
+RDB_PATH = Path.cwd().joinpath('sqlite3')
+if not RDB_PATH.exists():
+    RDB_PATH.mkdir(parents=True)
 
-MY_DAG = DAG(init_db())
-MY_DAG.load_dag()
 
 ##################################################
 app = Flask(__name__)
 CORS(app)
-app.config["SECRET_KEY"] = 'TPdlwotmd4aLWRbyVq8zu9v82dWYW1'
-app.config['UPLOAD_FOLDER'] = './download'
+app.config.from_mapping(
+    SECRET_KEY='TPdlwotmd4aLWRbyVq8zu9v82dWYW1',
+    UPLOAD_FOLDER='./download',
+    DATABASE=str(RDB_PATH.joinpath('kudag_user.db')),
+    )
+
 app.register_blueprint(front)
+app.register_blueprint(auth)
+
+from rdb import init_dbapp
+init_dbapp(app)
+
 api = Api(app)
 
 
@@ -35,7 +53,7 @@ def abort_if_tx_not_exist(txid: TxHash):
 
 # Use @app.route
 @app.route('/', methods=['GET'])
-def dag_index():
+def index():
     if request.method == 'GET':
         return render_template('index.html')
 
@@ -62,7 +80,7 @@ api.add_resource(DAG_API, '/dag', '/dag/<txid>')
 @app.route('/tx', methods=['GET', 'POST'])
 def tx_interface():
     if request.method == "GET":
-        return render_template('dag.html')
+        return render_template('tx.html')
 
     elif request.method == "POST":
         req = request.form

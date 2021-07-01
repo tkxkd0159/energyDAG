@@ -21,7 +21,7 @@
 						<a href="index" class="logo"><strong>DAG-based</strong><span>Distributed Ledger Platform</span></a>
 						<nav>
 								{% if g.user %}
-								  <span>{{ g.user['username'] }}</span>
+								  <span style="margin: 0px 15px 0px 0px;">{{ g.user['username'] }}</span>
 								  <a href="{{ url_for('auth.logout') }}" class="button">Log Out</a>
 								{% else %}
 								  <a href="{{ url_for('auth.register') }}" class="button primary" style="margin: 0px 8px 0px 0px;">Register</a>
@@ -40,9 +40,14 @@
 							<li><a href="{{ url_for('front.show', page='elements') }}">Elements</a></li>
 						</ul>
 						<ul class="actions stacked">
+							{% if g.user %}
 							<li><a href="{{ url_for('tx_interface') }}" class="button primary fit">Send</a></li>
+							<li><a href="{{ url_for('auth.logout') }}" class="button fit">Log Out</a></li>
+							{% else %}
+							<li><a href="{{ url_for('auth.signin') }}" class="button primary fit">Send</a></li>
 							<li><a href="{{ url_for('auth.signin') }}" class="button fit">Sign In</a></li>
 							<li><a href="{{ url_for('auth.register') }}" class="button fit">Sign Up</a></li>
+							{% endif %}
 						</ul>
 					</nav>
 
