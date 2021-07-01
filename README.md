@@ -1,10 +1,22 @@
 # setting
-
+## install
 ```
 pip install -r requirements.txt
 pip install -e kudag
 
 ```
+## css
+```
+sass static/sass/main.scss static/css/main.css
+```
+
+## flask
+```bash
+flask run # app
+flask init-db # Run on another terminal, RDB initialization
+```
+
+## TODO
 블록체인처럼 초반에 initialization해서 데이터 접근이 빠른 state DB를 만들어 두는게 중요  
 이후 ledger가 갱신될 때마다 state DB도 갱신 -> 상대적으로 오버헤드 적음  
 TODO : **P2P Websocket, Wallet, Peer table,  DB(실제 데이터 삽입), 각종 DAG관련 기능**
