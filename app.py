@@ -1,4 +1,4 @@
-import requests
+import sys
 from flask import Flask, request, render_template, escape, redirect
 from flask_cors import CORS
 from flask_restful import Resource, Api, abort
@@ -72,12 +72,8 @@ def tx_interface():
         value_ = req['value_']
 
         target_tx = TX(from_=from_, to_=to_, data={"value": value_})
-        _, tx = MY_DAG.add_tx(target_tx)
-        requests.post(url="http://127.0.0.1:5000/dag",
-                      headers={'Content-Type': 'application/json'},
-                      data=tx
-                     )
-
+        tx_id, _ = MY_DAG.add_tx(target_tx)
+        print(f'TX ID : {tx_id}', file=sys.stderr)
         return redirect("http://127.0.0.1:5000/dag")
 
 @app.route('/path/<path:subpath>')
