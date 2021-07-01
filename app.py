@@ -6,13 +6,13 @@ from webargs.flaskparser import use_args
 
 from front import front
 from kudag.dag import TxHash, DAG, TX
-from kudag.db import DB, STATE_DB
+from kudag.db import init_db, init_state_db
 from rest_schema import TxSchema
 
 
 # flask run
 
-MY_DAG = DAG(DB)
+MY_DAG = DAG(init_db())
 MY_DAG.load_dag()
 
 ##################################################
