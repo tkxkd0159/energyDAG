@@ -30,3 +30,9 @@ Address = 16 bytes, (sha3_256 -> blake2s)
 
 Save (private key : public key) pair  
 Account-based (Not UTXO)
+
+
+# Development
+```
+sass static/sass/main.scss static/css/main.css
+```

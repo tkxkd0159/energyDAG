@@ -1887,6 +1887,12 @@ button,
     .spotlights > section > .content {
       padding: 3em 1.5em 1em 1.5em ; } }
 
+.flash {
+  margin: 1em 0;
+  padding: 1em;
+  background: #cae6f6;
+  border: 1px solid #377ba8; }
+
 /* Header */
 @-moz-keyframes reveal-header {
   0% {
@@ -1979,8 +1985,7 @@ button,
       height: inherit;
       line-height: inherit;
       padding: 0 0.75em;
-      position: relative;
-}
+      position: relative; }
       #header nav a:last-child {
         padding-right: 1.5em; }
       #header nav a[href="#menu"] {
@@ -2096,7 +2101,7 @@ button,
   -webkit-align-items: center;
   -ms-align-items: center;
   align-items: center;
-  background-image: url("../images/banner.jpg");
+  background-image: url("../../images/banner.jpg");
   display: -moz-flex;
   display: -webkit-flex;
   display: -ms-flex;
