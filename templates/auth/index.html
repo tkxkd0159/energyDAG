@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Energy Exchange Platform</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, user-scalable=no"
+        />
+        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}" />
+        <link
+            rel="shrtcut icon"
+            type="image/x-icon"
+            href="{{url_for('static', filename='favicon.ico')}}"
+        />
+        <noscript
+        <link rel="stylesheet" href="{{url_for('static', filename='css/noscript.css')}}" />
+   </noscript>
+    </head>
+    <body class="is-preload">
+        <div id="wrapper">
+            <header id="header" class="alt">
+                <a href="index" class="logo"><strong>DAG-based</strong><span>Distributed Ledger Platform</span></a>
+                <nav>
+                        {% if g.user %}
+                          <span>{{ g.user['username'] }}</span>
+                          <a href="{{ url_for('auth.logout') }}" class="button">Log Out</a>
+                        {% else %}
+                          <a href="{{ url_for('auth.register') }}" class="button primary" style="margin: 0px 8px 0px 0px;">Register</a>
+                          <a href="{{ url_for('auth.signin') }}" class="button primary" style="margin: 0px 16px 0px 8px;">&nbsp;&nbsp;Log In&nbsp;&nbsp;</a>
+                        {% endif %}
+
+                    <a href="#menu">Menu</a>
+                </nav>
+            </header>
+
+            <nav id="menu">
+                <ul class="links">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('front.show', page='landing') }}">Landing</a></li>
+                    <li><a href="{{ url_for('front.show', page='generic') }}">Generic</a></li>
+                    <li><a href="{{ url_for('front.show', page='elements') }}">Elements</a></li>
+                </ul>
+                <ul class="actions stacked">
+                    <li><a href="{{ url_for('tx_interface') }}" class="button primary fit">Send</a></li>
+                    <li><a href="{{ url_for('auth.signin') }}" class="button fit">Sign In</a></li>
+                    <li><a href="{{ url_for('auth.register') }}" class="button fit">Sign Up</a></li>
+                </ul>
+            </nav>
+
+            <div id="main" class="alt">
+                <section id="one">
+                    <div class="inner">
+                        <header class="major">
+                            {% block header %}{% endblock %}
+                        </header>
+                        {% for message in get_flashed_messages() %}
+                        <div class="flash">{{ message }}</div>
+                      {% endfor %}
+
+                        {% block content %}{% endblock %}
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="{{url_for('static', filename='js/jquery.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/jquery.scrolly.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/jquery.scrollex.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/browser.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/breakpoints.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/util.js')}}"></script>
+        <script src="{{url_for('static', filename='js/main.js')}}"></script>
+    </body>
+</html>
