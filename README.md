@@ -1,21 +1,28 @@
-# setting
-## install
+# Setting
+## Install
 ```
 pip install -r requirements.txt
 pip install -e kudag
 
 ```
-## css
+## CSS
 ```
 sass static/sass/main.scss static/css/main.css
 ```
 
-## flask
+## Flask
 ```bash
 flask run # app
 flask init-db # Run on another terminal, RDB initialization
 ```
-
+## jinja
+```
+{% block sidebar %}
+    {% block inner_sidebar %}
+        ...
+    {% endblock inner_sidebar %}
+{% endblock sidebar %}
+```
 ## TODO
 블록체인처럼 초반에 initialization해서 데이터 접근이 빠른 state DB를 만들어 두는게 중요  
 이후 ledger가 갱신될 때마다 state DB도 갱신 -> 상대적으로 오버헤드 적음  
