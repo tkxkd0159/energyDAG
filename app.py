@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from flask import Flask, request, render_template, escape, redirect
+from flask import Flask, request, render_template, escape, redirect, jsonify
 from flask_cors import CORS
 from flask_restful import Resource, Api, abort
 from webargs.flaskparser import use_args
@@ -41,6 +41,11 @@ init_dbapp(app)
 
 api = Api(app)
 
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # jsonify(error=str(e)).get_data()  -> {"error":"404 Not Found: Resource not found"}
+    return render_template('404.html'), 404
 
 def abort_if_dag_not_exist():
     if MY_DAG.txs == {}:

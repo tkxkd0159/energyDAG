@@ -35,7 +35,7 @@ def show(page):
     try:
         return render_template(f'{page}.html')
     except TemplateNotFound:
-        abort(404)
+        abort(404, description="Resource not found")
 
 
 @front.route('/upload', methods=['GET', 'POST'])
