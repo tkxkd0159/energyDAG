@@ -20,14 +20,14 @@
     <body class="is-preload">
         <div id="wrapper">
             <header id="header" class="alt">
-                <a href="index" class="logo"><strong>DAG-based</strong><span>Distributed Ledger Platform</span></a>
+                <a href="{{ url_for('index') }}" class="logo"><strong>DAG-based</strong><span>Distributed Ledger Platform</span></a>
                 <nav>
                         {% if g.user %}
                         <span style="margin: 0px 15px 0px 0px;">{{ g.user['username'] }}</span>
                           <a href="{{ url_for('auth.logout') }}" class="button">Log Out</a>
                         {% else %}
                           <a href="{{ url_for('auth.register') }}" class="button primary" style="margin: 0px 8px 0px 0px;">Register</a>
-                          <a href="{{ url_for('auth.signin') }}" class="button primary" style="margin: 0px 16px 0px 8px;">&nbsp;&nbsp;Log In&nbsp;&nbsp;</a>
+                          <a href="{{ url_for('auth.signin') }}" class="button primary" style="margin: 0px 16px 0px 8px;padding: 0em 1.4em 0em 1.4em;">Sign In</a>
                         {% endif %}
 
                     <a href="#menu">Menu</a>
@@ -59,9 +59,13 @@
                         <header class="major">
                             {% block header %}{% endblock %}
                         </header>
-                        {% for message in get_flashed_messages() %}
-                        <div class="flash">{{ message }}</div>
-                      {% endfor %}
+                      {% with messages = get_flashed_messages() %}
+                      {% if messages %}
+                        {% for message in messages %}
+                          <div class="flash"><b style="color: red;">{{ message }}</b></div>
+                        {% endfor %}
+                      {% endif %}
+                    {% endwith %}
 
                         {% block content %}{% endblock %}
                     </div>

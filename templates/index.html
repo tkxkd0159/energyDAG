@@ -25,7 +25,7 @@
 								  <a href="{{ url_for('auth.logout') }}" class="button">Log Out</a>
 								{% else %}
 								  <a href="{{ url_for('auth.register') }}" class="button primary" style="margin: 0px 8px 0px 0px;">Register</a>
-								  <a href="{{ url_for('auth.signin') }}" class="button primary" style="margin: 0px 16px 0px 8px;">&nbsp;&nbsp;Log In&nbsp;&nbsp;</a>
+								  <a href="{{ url_for('auth.signin') }}" class="button primary" style="margin: 0px 16px 0px 8px;padding: 0em 1.4em 0em 1.4em;">Sign In</a>
 								{% endif %}
 
 							<a href="#menu">Menu</a>
@@ -57,6 +57,14 @@
 							<header class="major">
 								<h1>My DAG Test Page</h1>
 							</header>
+							{% with messages = get_flashed_messages() %}
+							{% if messages %}
+							  {% for message in messages %}
+								<div class="flash">{{ message }}</div>
+							  {% endfor %}
+							{% endif %}
+						  	{% endwith %}
+
 							<div class="content">
 								<p>To be continued</p>
 								<ul class="actions">
