@@ -10,7 +10,7 @@ from kudag.db import init_db, init_state_db
 from rest_schema import TxSchema
 
 from front import front
-from auth import auth
+from auth import auth, login_required
 from rdb import init_dbapp
 
 # flask run
@@ -76,8 +76,8 @@ class DAG_API(Resource):
 
 api.add_resource(DAG_API, '/dag', '/dag/<txid>')
 
-
 @app.route('/tx', methods=['GET', 'POST'])
+@login_required
 def tx_interface():
     if request.method == "GET":
         return render_template('tx.html')
@@ -96,6 +96,8 @@ def tx_interface():
 
 @app.route('/path/<path:subpath>')
 def show_subpath(subpath):
+    import sys
+    print(type(subpath), file=sys.stdout)
     return f'Subpath {escape(subpath)}'
 
 

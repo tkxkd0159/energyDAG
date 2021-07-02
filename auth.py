@@ -1,4 +1,5 @@
 import functools
+import re
 from flask import Blueprint, render_template, abort, redirect, url_for, \
                   g, request, session, flash
 from jinja2 import TemplateNotFound
@@ -33,20 +34,27 @@ def load_logged_in_user():
 @auth.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
-        username = request.form["walletid"]
-        password = request.form["walletpw"]
+        username: str = request.form["walletid"]
+        username = username.lower()
+        password: str = request.form["walletpw"]
         db = get_db()
         error = None
 
-        if not username:
-            error = "Username is required."
-        elif not password:
-            error = "Password is required."
+        id_pattern = re.compile(r"^[a-zA-Z]+")
+        anti_id_pattern = re.compile(r"[^a-zA-Z0-9]+")
+        if id_pattern.match(username) is None:
+            error = "Username must begin with plain characters"
+        elif anti_id_pattern.findall(username) != []:
+            error = "You must use only alphabets and numbers"
+        elif len(username) < 6:
+            error = "Username must be at least 6 characters long"
+        elif len(password) < 10:
+            error = "Password must be at least 10 characters long"
         elif (
             db.execute("SELECT idx FROM user WHERE username = ?", (username,)).fetchone()
             is not None
         ):
-            error = f"User {username} is already registered."
+            error = f"User {username} is already registered"
 
         if error is None:
             db.execute(
@@ -65,6 +73,7 @@ def register():
 def signin():
     if request.method == "POST":
         username = request.form["walletid"]
+        username = username.lower()
         password = request.form["walletpw"]
         db = get_db()
         error = None
@@ -73,12 +82,11 @@ def signin():
         ).fetchone()
 
         if user is None:
-            error = "Incorrect username."
+            error = "Incorrect username!"
         elif not check_password_hash(user["password"], password):
-            error = "Incorrect password."
+            error = "Incorrect password!"
 
         if error is None:
-            # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user["idx"]
             return redirect(url_for("index"))
