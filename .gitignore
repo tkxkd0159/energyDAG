@@ -21,3 +21,4 @@ wallet/
 db/
 state/
 *.db
+testdb

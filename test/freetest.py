@@ -20,3 +20,7 @@ target_update.update({"my":2, "new": "dict"})
 print(target_update)
 db.put(b'main', json.dumps(target_update).encode())
 print(db.get(b'main'))
+
+
+# import requests
+# print(requests.get(url="http://127.0.0.1:5000/get_state").json())

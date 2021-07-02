@@ -1,24 +1,19 @@
 import sys
 from pathlib import Path
-from flask import Flask, request, render_template, escape, redirect, jsonify
+from flask import Flask, request, render_template, escape, redirect
 from flask_cors import CORS
 from flask_restful import Resource, Api, abort
 from webargs.flaskparser import use_args
 
-from kudag.dag import TxHash, DAG, TX
-from kudag.db import init_db, init_state_db
+from kudag.dag import TxHash, TX
+from kudag import MY_DAG, MY_DB
 from rest_schema import TxSchema
 
 from front import front
 from auth import auth, login_required
 from rdb import init_dbapp
 
-# flask run
-try:
-    MY_DAG = DAG(init_db())
-    MY_DAG.load_dag()
-except:
-    pass
+
 RDB_PATH = Path.cwd().joinpath('sqlite3')
 if not RDB_PATH.exists():
     RDB_PATH.mkdir(parents=True)
@@ -99,10 +94,24 @@ def tx_interface():
         print(f'TX ID : {tx_id}', file=sys.stderr)
         return redirect("http://127.0.0.1:5000/dag")
 
+
+##################################################################
+
+@app.route('/get_state')
+def get_state():
+    import json
+    temp = {}
+    with MY_DB.snapshot() as sn:
+        for key, value in sn:
+            temp[key.decode()] = json.loads(value.decode())
+
+    return temp
+
+
 @app.route('/path/<path:subpath>')
 def show_subpath(subpath):
     import sys
-    print(type(subpath), file=sys.stdout)
+    # print(type(subpath), file=sys.stdout)
     return f'Subpath {escape(subpath)}'
 
 
