@@ -1,5 +1,5 @@
 import sys
-from os import path, scandir
+from os import path, scandir, getcwd
 
 from flask import Blueprint, render_template, abort, request, redirect, flash, current_app, send_from_directory
 from flask.helpers import send_from_directory
@@ -35,7 +35,7 @@ def show(page):
     try:
         return render_template(f'{page}.html')
     except TemplateNotFound:
-        abort(404)
+        abort(404, description="Resource not found")
 
 
 @front.route('/upload', methods=['GET', 'POST'])

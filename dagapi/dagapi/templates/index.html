@@ -9,42 +9,62 @@
 		<title>Energy Exchange Platform</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="../static/css/main.css" />
-		<noscript><link rel="stylesheet" href="../static/css/noscript.css" /></noscript>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}" />
+		<link rel="shrtcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico')}}">
+		<noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/noscript.css')}}" /></noscript>
 	</head>
 	<body class="is-preload">
 
 
-		<!-- Wrapper -->
 			<div id="wrapper">
-				<!-- Header -->
 					<header id="header" class="alt">
 						<a href="index" class="logo"><strong>DAG-based</strong><span>Distributed Ledger Platform</span></a>
 						<nav>
+								{% if g.user %}
+								  <span style="margin: 0px 15px 0px 0px;">{{ g.user['username'] }}</span>
+								  <a href="{{ url_for('auth.logout') }}" class="button">Log Out</a>
+								{% else %}
+								  <a href="{{ url_for('auth.register') }}" class="button primary" style="margin: 0px 8px 0px 0px;">Register</a>
+								  <a href="{{ url_for('auth.signin') }}" class="button primary" style="margin: 0px 16px 0px 8px;padding: 0em 1.4em 0em 1.4em;">Sign In</a>
+								{% endif %}
+
 							<a href="#menu">Menu</a>
 						</nav>
 					</header>
 
-				<!-- Menu -->
 					<nav id="menu">
 						<ul class="links">
-							<li><a href="{{ url_for('dag_index') }}">Home</a></li>
-							<li><a href="landing">Landing</a></li>
-							<li><a href="generic">Generic</a></li>
-							<li><a href="elements">Elements</a></li>
+							<li><a href="{{ url_for('index') }}">Home</a></li>
+							<li><a href="{{ url_for('front.show', page='landing') }}">Landing</a></li>
+							<li><a href="{{ url_for('front.show', page='generic') }}">Generic</a></li>
+							<li><a href="{{ url_for('front.show', page='elements') }}">Elements</a></li>
 						</ul>
 						<ul class="actions stacked">
-							<li><a href="#" class="button primary fit">Get Started</a></li>
-							<li><a href="#" class="button fit">Log In</a></li>
+							{% if g.user %}
+							<li><a href="{{ url_for('tx_interface') }}" class="button primary fit">Send</a></li>
+							<li><a href="{{ url_for('auth.logout') }}" class="button fit">Log Out</a></li>
+							{% else %}
+							<li><a href="{{ url_for('auth.signin') }}" class="button primary fit">Send</a></li>
+							<li><a href="{{ url_for('auth.signin') }}" class="button fit">Sign In</a></li>
+							<li><a href="{{ url_for('auth.register') }}" class="button fit">Sign Up</a></li>
+							{% endif %}
 						</ul>
 					</nav>
 
 				<!-- Banner -->
-					<section id="banner" class="major">
+					<section id="banner" class="major" style="background-image: url(/static/images/banner.jpg)">
 						<div class="inner">
 							<header class="major">
 								<h1>My DAG Test Page</h1>
 							</header>
+							{% with messages = get_flashed_messages() %}
+							{% if messages %}
+							  {% for message in messages %}
+								<div class="flash">{{ message }}</div>
+							  {% endfor %}
+							{% endif %}
+						  	{% endwith %}
+
 							<div class="content">
 								<p>To be continued</p>
 								<ul class="actions">

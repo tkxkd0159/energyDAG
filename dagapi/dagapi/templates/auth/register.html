@@ -1,0 +1,34 @@
+{% extends 'auth/index.html' %}
+{% block header %}
+    <h1>Register</h1>
+{% endblock %}
+
+
+{% block content %}
+<div class="row gtr-200">
+    <div class="col-6 col-12-medium">
+
+  <form action="http://127.0.0.1:5000/auth/register" method="post">
+    <div class="row gtr-uniform">
+        <div class="col-12">
+            <label for="walletid">Username</label>
+            <input type="text" name="walletid" id="walletid"
+            placeholder="Please enter your ID" required>
+        </div>
+        <div class="col-12">
+            <label for="walletpw">Password</label>
+            <input type="password" name="walletpw" id="walletpw"
+            placeholder="Please enter your password" required>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="button primary icon solid fa-clipboard-list">
+                Register
+            </button>
+        </div>
+    </div>
+</form>
+</div>
+
+</div>
+
+{% endblock %}

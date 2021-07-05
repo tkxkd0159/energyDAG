@@ -177,3 +177,10 @@ class DAG:
             print(e)
             return False
 
+if __name__ == "__main__":
+    from kudag.db import init_db
+
+    mydag = DAG(init_db())
+    # mydag.add_tx(TX())
+    mydag.load_dag()
+    print(mydag.txs)
