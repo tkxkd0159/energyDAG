@@ -2,7 +2,8 @@
 ## Install
 ```
 pip install -r requirements.txt
-pip install -e kudag
+pip install -e ./kudag
+pip install -e ./dagapi
 
 ```
 ## CSS
