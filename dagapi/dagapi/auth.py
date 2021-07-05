@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, abort, redirect, url_for, \
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from rdb import get_db
+from dagapi.rdb import get_db
 
 auth = Blueprint('auth', __name__, template_folder='templates', url_prefix='/auth')
 

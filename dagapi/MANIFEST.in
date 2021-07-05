@@ -1,0 +1,4 @@
+include dagapi/initrdb.sql
+graft dagapi/static
+graft dagapi/templates
+global-exclude *.pyc
