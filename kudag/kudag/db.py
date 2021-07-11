@@ -14,7 +14,7 @@ def init_db():
     return DB
 
 def init_state_db():
-    state_path = Path(__file__).parents[2].joinpath("state/")
+    state_path = Path(__file__).parents[2].joinpath("statedb/")
     if not state_path.exists():
         state_path.mkdir(parents=True)
     statedb_path = state_path.joinpath(P2P_PORT)

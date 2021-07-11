@@ -112,7 +112,7 @@ def create_app(test_config=None):
     @app.route('/path/<path:subpath>')
     def show_subpath(subpath):
         import sys
-        # print(type(subpath), file=sys.stdout)
+        # print(subpath, file=sys.stdout)
         return f'Subpath {escape(subpath)}'
 
     return app
