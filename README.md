@@ -13,6 +13,7 @@ sass static/sass/main.scss static/css/main.css
 
 ## Flask
 ```bash
+export FLASK_APP=flaskr  # set FLASK_APP=flaskr
 flask run # app
 flask init-db # Run on another terminal, RDB initialization
 ```
