@@ -11,12 +11,14 @@ from typing import Union
 from functools import reduce, lru_cache
 from hashlib import sha256, sha3_256, blake2s
 from ecdsa import SigningKey, VerifyingKey, NIST256p
+from ecdsa.util import randrange_from_seed__trytryagain
 
-from kudag.param import BITCOIN_ALPHABET
+from kudag.param import READABLE_ALPHABET
 
 
-def createPrivateKey() -> SigningKey:
-    return SigningKey.generate(curve=NIST256p, hashfunc=sha256)
+def createPrivateKey(seed) -> SigningKey:
+    secexp = randrange_from_seed__trytryagain(seed, NIST256p.order)
+    return SigningKey.from_secret_exponent(secexp, curve=NIST256p, hashfunc=sha256)
 
 def createPublicKey(pvtK: SigningKey) -> VerifyingKey:
     return pvtK.verifying_key
@@ -44,7 +46,7 @@ def sha256ForTx(*args: str) -> str:
     hash.update(res.encode())
     return hash.hexdigest()
 
-def b58encode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
+def b58encode(v: Union[str, bytes, int], char_set: bytes = READABLE_ALPHABET) -> bytes:
     if isinstance(v, int):
         decimal = v
     if isinstance(v, str):
@@ -68,7 +70,7 @@ def b58encode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> 
     return char_set[0:1] * pad_len + output
 
 
-def b58decode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
+def b58decode(v: Union[str, bytes, int], char_set: bytes = READABLE_ALPHABET) -> bytes:
     if not isinstance(v, int):
         v = v.rstrip()
     if isinstance(v, str):
@@ -98,7 +100,7 @@ def b58decode(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> 
 
 
 
-def b58encodeWithChecksum(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
+def b58encodeWithChecksum(v: Union[str, bytes, int], char_set: bytes = READABLE_ALPHABET) -> bytes:
     """
     Encode a string using Base58 with a 4 character checksum
     """
@@ -109,7 +111,7 @@ def b58encodeWithChecksum(v: Union[str, bytes, int], char_set: bytes = BITCOIN_A
     return b58encode(v + digest[:4], char_set=char_set)
 
 
-def b58decodeWithChecksum(v: Union[str, bytes, int], char_set: bytes = BITCOIN_ALPHABET) -> bytes:
+def b58decodeWithChecksum(v: Union[str, bytes, int], char_set: bytes = READABLE_ALPHABET) -> bytes:
     """
     Decode and verify the checksum of a Base58 encoded string
     """

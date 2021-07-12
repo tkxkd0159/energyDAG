@@ -1,11 +1,12 @@
 import sys
 from pathlib import Path
-from flask import Flask, request, render_template, escape, redirect
+from flask import Flask, request, session, render_template, escape, redirect
 from flask_cors import CORS
 from flask_restful import Resource, Api, abort
 from webargs.flaskparser import use_args
 
 from kudag.dag import TxHash, TX
+from kudag.wallet import Wallet
 from kudag import MY_DAG, MY_DB
 
 from dagapi.rest_schema import TxSchema
@@ -81,18 +82,27 @@ def create_app(test_config=None):
     @login_required
     def tx_interface():
         if request.method == "GET":
-            return render_template('tx.html')
+            my_pwhash = session.get("pwhash")
+            mywallet = Wallet(pwhash=my_pwhash)
+            mywallet.init()
+            addr_list = []
+            for i in range(mywallet.key_nums):
+                addr_list.append((i, mywallet.addr[str(i)]))
+
+            return render_template('tx.html', addrs=addr_list)
 
         elif request.method == "POST":
             req = request.form
 
-            from_ = req['from_']
+            from_ = req['from-category']
             to_ = req['to_']
             value_ = req['value_']
+            contract_code = req['CC']
+            print(from_, to_, value_, contract_code, file=sys.stdout)
 
             target_tx = TX(from_=from_, to_=to_, data={"value": value_})
             tx_id, _ = MY_DAG.add_tx(target_tx)
-            print(f'TX ID : {tx_id}', file=sys.stderr)
+            # print(f'TX ID : {tx_id}', file=sys.stderr)
             return redirect("http://127.0.0.1:5000/dag")
 
 
@@ -111,8 +121,7 @@ def create_app(test_config=None):
 
     @app.route('/path/<path:subpath>')
     def show_subpath(subpath):
-        import sys
-        # print(type(subpath), file=sys.stdout)
+        # print(subpath, file=sys.stdout)
         return f'Subpath {escape(subpath)}'
 
     return app

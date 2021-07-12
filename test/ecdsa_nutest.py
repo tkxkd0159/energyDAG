@@ -1,4 +1,4 @@
-from ecdsa import SigningKey, VerifyingKey, BadSignatureError
+from ecdsa import SigningKey, VerifyingKey, BadSignatureError, NIST192p
 from ecdsa.util import randrange_from_seed__trytryagain
 
 

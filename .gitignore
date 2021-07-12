@@ -19,6 +19,7 @@ results*
 # etc
 wallet/
 db/
-state/
+statedb/
 *.db
 testdb
+*.der

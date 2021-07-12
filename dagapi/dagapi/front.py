@@ -67,7 +67,7 @@ def download_file(filename=None):
     if filename is not None:
         return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
     else:
-        filepaths = search_files('download')
+        filepaths = search_files(current_app.config['UPLOAD_FOLDER'])
         file_tuple = []
         for f in filepaths:
             if "/" in f:
