@@ -13,8 +13,11 @@ sass static/sass/main.scss static/css/main.css
 
 ## Flask
 ```bash
-export FLASK_APP=flaskr  # set FLASK_APP=flaskr
+conda activate energy
+export FLASK_APP=dagapi  # set FLASK_APP=dagapi
 flask run # app
+
+export FLASK_APP=dagapi
 flask init-db # Run on another terminal, RDB initialization
 ```
 ## jinja
