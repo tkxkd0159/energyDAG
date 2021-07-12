@@ -5,15 +5,31 @@
 
 
 {% block content %}
+<ul class="actions">
+    <li><a href="{{ url_for('auth.add_more_key') }}" class="button next">Create an account</a></li>
+</ul>
 <div class="row gtr-200">
     <div class="col-8 col-12-medium">
 
   <form action="http://127.0.0.1:5000/tx" method="post">
     <div class="row gtr-uniform">
         <div class="col-12">
-            <label for="from_">Your Address:</label>
-            <input type="text" name="from_" id="from_"
-            placeholder="Please enter your address" required>
+            <select
+                name='from-category'
+                id='from-category'
+            >
+            <option value="" disabled selected>
+                - Select your address -
+            </option>
+            {% for i, addr in addrs %}
+            <option value="{{ addr }}"> {{ addr }} </option>
+            {% endfor %}
+            </select>
+        </div>
+        <div class="col-12">
+            <label for="CC">Contract Code:</label>
+            <input type="text" name="CC" id="CC"
+            placeholder="Please enter the contract code which you want to buy" required>
         </div>
         <div class="col-12">
             <label for="to_">Receiver Address:</label>
