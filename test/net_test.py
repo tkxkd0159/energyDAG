@@ -39,6 +39,11 @@ class Network(unittest.TestCase):
         self.keyset = ["mytxid"]
 
     def test_1_post(self):
+        # requests.post(url="http://127.0.0.1:5000/dag",
+        #               headers={'Content-Type': 'application/json'},
+        #               data=tx
+        #              )
+
         self.assertEqual(posttx(self.mytx, self.url[0], self.header), 200)
         self.assertEqual(postfile(self.url[1]), 200)
 
