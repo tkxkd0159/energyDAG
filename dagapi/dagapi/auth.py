@@ -23,6 +23,8 @@ def login_required(f):
 def load_logged_in_user():
 
     user_id = session.get("user_id")
+    my_pwhash = session.get("pwhash")
+
 
     if user_id is None:
         g.user = None
@@ -30,6 +32,14 @@ def load_logged_in_user():
         g.user = (
             get_db().execute("SELECT * FROM user WHERE idx = ?", (user_id,)).fetchone()
         )
+
+    if my_pwhash is None:
+        g.wallet = None
+    else:
+        mywallet = Wallet(pwhash=my_pwhash)
+        mywallet.init()
+        g.wallet = mywallet
+
 
 
 @auth.route("/register", methods=("GET", "POST"))
@@ -103,11 +113,8 @@ def signin():
 
 @auth.route("/addkey")
 def add_more_key():
-    my_pwhash = session.get("pwhash")
-    mywallet = Wallet(pwhash=my_pwhash)
-    mywallet.init()
-    mywallet.add_newkey_from_master()
-    return redirect(url_for("index"))
+    g.wallet.add_newkey_from_master()
+    return redirect(url_for("tx_interface"))
 
 
 

@@ -17,26 +17,29 @@ class Wallet:
         if not self.path.exists():
             self.path.mkdir(parents=True)
 
-        self.key_nums = 0
+        self.key_nums: int = 0
         self.sk = {}
         self.vk = {}
         self.addr = {}
 
     def init(self):
-        if not self.path.joinpath('private.pem').exists():
+        if not self.path.joinpath('private0.pem').exists():
             self.sk['0'] = createPrivateKey(self.seed)
             self.vk['0'] = createPublicKey(self.sk['0'])
-            with open(str(self.path)+"/private.pem", 'wb') as f:
+            with open(str(self.path)+"/private0.pem", 'wb') as f:
                 f.write(self.sk['0'].to_pem())
-            with open(str(self.path)+"/public.pem", 'wb') as f:
+            with open(str(self.path)+"/public0.pem", 'wb') as f:
                 f.write(self.vk['0'].to_pem())
         else:
-            with open(str(self.path)+"/private.pem", 'rb') as f:
-                self.sk['0'] = SigningKey.from_pem(f.read())
-            self.vk['0'] = createPublicKey(self.sk['0'])
+            self.key_nums = int(len(listdir(self.path)) / 2)
+            round = self.key_nums
 
-        self.addr['0'], _ = createAddr(self.vk['0'])
-        self.key_nums = len(self.sk)
+            for i in range(round):
+                j = str(i)
+                with open(str(self.path)+f"/private{i}.pem", 'rb') as f:
+                    self.sk[j] = SigningKey.from_pem(f.read())
+                self.vk[j] = createPublicKey(self.sk[j])
+                self.addr[j], _ = createAddr(self.vk[j])
 
     def add_newkey_from_master(self):
         i = f'{self.key_nums}'
@@ -50,10 +53,9 @@ class Wallet:
         with open(str(self.path) + f'/{target_vkname}', 'wb') as f:
             f.write(self.vk[i].to_pem())
         self.addr[i], _ = createAddr(self.vk[i])
-        self.key_nums = len(self.sk)
+        self.key_nums += 1
 
-    def load(self):
-        pass
+
 
 #! Deprecated
 @dataclass
