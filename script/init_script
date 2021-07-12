@@ -1,0 +1,24 @@
+#!/bin/bash
+
+options=$(getopt -o '' --long new -- "$@")
+printf "Current Working Directory is : %s\n" $(pwd)
+
+export FLASK_APP=dagapi
+
+eval set -- "$options"
+while true; do
+    case "$1" in
+        --new)
+            echo "triggerd"
+            echo >&2 "Start RDB(SQLite3)"
+            flask init-db
+
+            shift ;;
+        --)
+            shift
+            break ;;
+    esac
+done
+
+flask run
+echo "Initialize KU-DAG"

@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "Are you sure to delete all databases? (yes or no)"
+read SIG
+
+if [[ $SIG == "yes" ]]
+then
+    rm -rf ./db
+    rm -rf ./sqlite3
+    rm -rf ./wallet
+    echo Delete all databases
+else
+    echo Reexcute this script when you want
+fi
