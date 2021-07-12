@@ -11,12 +11,14 @@ from typing import Union
 from functools import reduce, lru_cache
 from hashlib import sha256, sha3_256, blake2s
 from ecdsa import SigningKey, VerifyingKey, NIST256p
+from ecdsa.util import randrange_from_seed__trytryagain
 
 from kudag.param import BITCOIN_ALPHABET
 
 
-def createPrivateKey() -> SigningKey:
-    return SigningKey.generate(curve=NIST256p, hashfunc=sha256)
+def createPrivateKey(seed) -> SigningKey:
+    secexp = randrange_from_seed__trytryagain(seed, NIST256p.order)
+    return SigningKey.from_secret_exponent(secexp, curve=NIST256p, hashfunc=sha256)
 
 def createPublicKey(pvtK: SigningKey) -> VerifyingKey:
     return pvtK.verifying_key

@@ -6,6 +6,7 @@ from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from dagapi.rdb import get_db
+from kudag.wallet import Wallet
 
 auth = Blueprint('auth', __name__, template_folder='templates', url_prefix='/auth')
 
@@ -87,13 +88,27 @@ def signin():
             error = "Incorrect password!"
 
         if error is None:
+            my_pwhash = user["password"].split("$")[2]
+            mywallet = Wallet(pwhash=my_pwhash)
+            mywallet.init()
+
             session.clear()
             session["user_id"] = user["idx"]
+            session["pwhash"] = my_pwhash
             return redirect(url_for("index"))
 
         flash(error)
 
     return render_template("auth/signin.html")
+
+@auth.route("/addkey")
+def add_more_key():
+    my_pwhash = session.get("pwhash")
+    mywallet = Wallet(pwhash=my_pwhash)
+    mywallet.init()
+    mywallet.add_newkey_from_master()
+    return redirect(url_for("index"))
+
 
 
 @auth.route("/logout")
