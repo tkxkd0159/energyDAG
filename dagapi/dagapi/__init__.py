@@ -76,7 +76,7 @@ def create_app(test_config=None):
 
             return 200
 
-    api.add_resource(DAG_API, '/dag', '/dag/<txid>')
+    api.add_resource(DAG_API, '/dag', '/dag/<txid>', endpoint='api.dag')
 
     @app.route('/tx', methods=['GET', 'POST'])
     @login_required
