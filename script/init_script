@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 if ! options=$(getopt -o '' --long new,ws:,http: -- "$@")
 then
     echo "Usage: up [--new][--ws <port>][--http <port>]
@@ -33,6 +34,7 @@ while true; do
             break ;;
     esac
 done
+
 
 if [[ $NEW == "true" ]] ; then
     echo "one"|./script/reset_client

@@ -10,6 +10,7 @@ from kudag.param import HTTP_PORT
 
 
 class Wallet:
+
     def __init__(self, pwhash=HTTP_PORT):
         self.seed = pwhash
         self.path = Path(__file__).parents[2].joinpath(f"wallet/{self.seed}")

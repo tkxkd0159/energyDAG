@@ -81,7 +81,7 @@ def create_app(test_config=None):
 
             return 200
 
-    api.add_resource(DAG_API, '/dag', '/dag/<txid>')
+    api.add_resource(DAG_API, '/dag', '/dag/<txid>', endpoint='api.dag')
 
     @app.route('/tx', methods=['GET', 'POST'])
     @login_required
@@ -108,6 +108,7 @@ def create_app(test_config=None):
             target_tx = TX(from_=from_, to_=to_, data={"value": value_})
             tx_id, _ = MY_DAG.add_tx(target_tx)
             # print(f'TX ID : {tx_id}', file=sys.stderr)
+
             return redirect(api.url_for(DAG_API))
 
 
