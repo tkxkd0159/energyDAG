@@ -2,14 +2,14 @@ from pathlib import Path
 import plyvel
 import json
 
-from kudag.param import P2P_PORT
+from kudag.param import HTTP_PORT
 
 
 def init_db():
     db_path = Path(__file__).parents[2].joinpath("db/")
     if not db_path.exists():
         db_path.mkdir(parents=True)
-    dag_path = db_path.joinpath(P2P_PORT)
+    dag_path = db_path.joinpath(HTTP_PORT)
     DB = plyvel.DB(str(dag_path), create_if_missing=True)
     return DB
 
@@ -17,7 +17,7 @@ def init_state_db():
     state_path = Path(__file__).parents[2].joinpath("statedb/")
     if not state_path.exists():
         state_path.mkdir(parents=True)
-    statedb_path = state_path.joinpath(P2P_PORT)
+    statedb_path = state_path.joinpath(HTTP_PORT)
     STATE_DB = plyvel.DB(str(statedb_path), create_if_missing=True)
     return STATE_DB
 

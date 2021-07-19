@@ -1,0 +1,24 @@
+#!/bin/bash
+
+options=$(getopt -o p:h: -- "$@")
+
+unset HTTP_PORT
+unset P2P_PORT
+
+eval set -- "$options"
+while true; do
+    case "$1" in
+        -h)
+            HTTP_PORT=$2
+            shift 2 ;;
+        -p)
+            P2P_PORT=$2
+            shift 2 ;;
+        --)
+            shift
+            break ;;
+    esac
+done
+
+export HTTP_PORT
+export P2P_PORT

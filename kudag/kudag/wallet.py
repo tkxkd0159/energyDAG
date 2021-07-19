@@ -6,12 +6,12 @@ from ecdsa import SigningKey
 
 
 from kudag.crypto import createPrivateKey, createPublicKey, createAddr
-from kudag.param import P2P_PORT
+from kudag.param import HTTP_PORT
 
-# TODO : P2P port에서 DB에 등록된 로그인 해쉬로 폴더이름 변경
-# TODO : 로그인 시 지갑 탐색 후 없으면 자동 생성, key store 개념 -> 실제 잔액은 statedb에서 indexing
+
 class Wallet:
-    def __init__(self, pwhash=P2P_PORT):
+
+    def __init__(self, pwhash=HTTP_PORT):
         self.seed = pwhash
         self.path = Path(__file__).parents[2].joinpath(f"wallet/{self.seed}")
         if not self.path.exists():

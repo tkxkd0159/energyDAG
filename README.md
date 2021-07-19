@@ -2,7 +2,8 @@
 ## Install
 ```
 pip install -r requirements.txt
-pip install -e kudag
+pip install -e ./kudag
+pip install -e ./dagapi
 
 ```
 ## CSS
@@ -12,7 +13,11 @@ sass static/sass/main.scss static/css/main.css
 
 ## Flask
 ```bash
+conda activate energy
+export FLASK_APP=dagapi  # set FLASK_APP=dagapi
 flask run # app
+
+export FLASK_APP=dagapi
 flask init-db # Run on another terminal, RDB initialization
 ```
 ## jinja

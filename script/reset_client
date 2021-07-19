@@ -1,5 +1,6 @@
 #!/bin/bash
-echo "Are you sure to delete all databases? (yes or no)"
+
+echo "Are you sure to delete all databases? (yes/no/one)"
 read SIG
 
 if [[ $SIG == "yes" ]]
@@ -8,6 +9,11 @@ then
     rm -rf ./sqlite3
     rm -rf ./wallet
     echo Delete all databases
+
+elif [[ $SIG == "one" ]]
+then
+    rm -rf ./db/$HTTP_PORT
+    rm -rf ./sqlite3/$HTTP_PORT
 else
     echo Reexcute this script when you want
 fi
