@@ -1,20 +1,25 @@
 import sys
 from pathlib import Path
-from flask import Flask, request, session, render_template, escape, redirect
+from flask import Flask, request, session, render_template, escape, redirect, url_for
 from flask_cors import CORS
 from flask_restful import Resource, Api, abort
 from webargs.flaskparser import use_args
 
+from kudag import MY_DAG, MY_DB
 from kudag.dag import TxHash, TX
 from kudag.wallet import Wallet
-from kudag import MY_DAG, MY_DB
+from kudag.param import HTTP_PORT, P2P_PORT
 
 from dagapi.rest_schema import TxSchema
 from dagapi.auth import login_required
 
+
+
+
 def create_app(test_config=None):
+
     base_path = Path(__file__).parents[2]
-    rdb_path = base_path.joinpath('sqlite3')
+    rdb_path = base_path.joinpath('sqlite3', HTTP_PORT)
     if not rdb_path.exists():
         rdb_path.mkdir(parents=True)
 
@@ -103,7 +108,7 @@ def create_app(test_config=None):
             target_tx = TX(from_=from_, to_=to_, data={"value": value_})
             tx_id, _ = MY_DAG.add_tx(target_tx)
             # print(f'TX ID : {tx_id}', file=sys.stderr)
-            return redirect("http://127.0.0.1:5000/dag")
+            return redirect(api.url_for(DAG_API))
 
 
     ##################################################################
@@ -127,12 +132,10 @@ def create_app(test_config=None):
     return app
 
 
-
-
-    """
+"""
     *    curl http://localhost:5000/todos
     *    curl http://localhost:5000/todos/todo2 -X DELETE -v // Delete a task
     *    curl http://localhost:5000/todos -d "task=something new" -v   // Add new task(POST), args['task'] = 'something new'
     *    curl http://localhost:5000/todos/todo3 -d "task=something different" -X PUT -v // Update a task
     *    curl -d @test_rest.json -H "Content-Type: application/json" -X POST http://localhost:5000/profile
-    """
+"""

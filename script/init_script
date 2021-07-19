@@ -1,7 +1,16 @@
 #!/bin/bash
 
-options=$(getopt -o '' --long new -- "$@")
-printf "Current Working Directory is : %s\n" $(pwd)
+if ! options=$(getopt -o '' --long new,ws:,http: -- "$@")
+then
+    echo "Usage: up [--new][--ws <port>][--http <port>]
+
+    --new : Initialize DAG program
+    --ws : Define Websocket server port
+    --http : Define HTTP-RPC server port
+    "
+    exit 1
+fi
+printf "Current Working Directory is : %s\n $(pwd)"
 
 export FLASK_APP=dagapi
 
@@ -9,16 +18,27 @@ eval set -- "$options"
 while true; do
     case "$1" in
         --new)
-            echo "triggerd"
-            echo >&2 "Start RDB(SQLite3)"
-            flask init-db
+            NEW="true"
 
             shift ;;
+        --ws)
+            P2P_PORT=$2
+            shift 2 ;;
+        --http)
+            HTTP_PORT=$2
+            shift 2 ;;
         --)
+            source ./script/set_port -p $P2P_PORT -h $HTTP_PORT
             shift
             break ;;
     esac
 done
 
-flask run
+if [[ $NEW == "true" ]] ; then
+    echo "one"|./script/reset_client
+    echo >&2 "Start RDB(SQLite3)"
+    flask init-db
+fi
+
+flask run -p $HTTP_PORT
 echo "Initialize KU-DAG"

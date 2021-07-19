@@ -1,8 +1,6 @@
 # pip install -e .
-
 from kudag.db import init_db
 from kudag.dag import DAG
-
 
 try:
     MY_DB = init_db()
