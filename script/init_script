@@ -11,7 +11,7 @@ then
     "
     exit 1
 fi
-printf "Current Working Directory is : %s\n $(pwd)"
+printf "Current Working Directory is : %s\n $(pwd)\n"
 
 export FLASK_APP=dagapi
 
@@ -42,5 +42,6 @@ if [[ $NEW == "true" ]] ; then
     flask init-db
 fi
 
-flask run -p $HTTP_PORT
+python ./p2p_srv.py --port $P2P_PORT &
+flask run -p $HTTP_PORT &
 echo "Initialize KU-DAG"

@@ -1,4 +1,5 @@
 # Setting
+`curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers`
 ## Install
 ```
 pip install -r requirements.txt

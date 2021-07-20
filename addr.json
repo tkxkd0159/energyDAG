@@ -1,0 +1,4 @@
+{
+    "peers": ["http://127.0.0.1:6002/api/peers", "http://127.0.0.1:6003/api/peers"],
+    "peers2": ["http://127.0.0.1:6002/api/peers", "http://127.0.0.1:6003/api/peers"]
+}
