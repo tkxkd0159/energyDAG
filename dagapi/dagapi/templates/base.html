@@ -25,8 +25,14 @@
 						<li><a href="{{ url_for('front.show', page='elements') }}">Elements</a></li>
 					</ul>
 					<ul class="actions stacked">
-						<li><a href="#" class="button primary fit">Get Started</a></li>
-						<li><a href="#" class="button fit">Log In</a></li>
+						{% if g.user %}
+						<li><a href="{{ url_for('rawapi.tx_interface') }}" class="button primary fit">Send</a></li>
+						<li><a href="{{ url_for('auth.logout') }}" class="button fit">Log Out</a></li>
+						{% else %}
+						<li><a href="{{ url_for('auth.signin') }}" class="button primary fit">Send</a></li>
+						<li><a href="{{ url_for('auth.signin') }}" class="button fit">Sign In</a></li>
+						<li><a href="{{ url_for('auth.register') }}" class="button fit">Sign Up</a></li>
+						{% endif %}
 					</ul>
 				</nav>
 
