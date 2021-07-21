@@ -1,163 +1,139 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<title>Energy Exchange Platform</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}" />
-		<link rel="shrtcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico')}}">
-		<noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/noscript.css')}}" /></noscript>
-	</head>
-	<body class="is-preload">
+{% extends 'base.html' %}
 
+{% block wheader %}
+<header id="header" class="alt">
+    <a href="index" class="logo"
+        ><strong>DAG-based</strong><span>Distributed Ledger Platform</span></a
+    >
+    <nav>
+        {% if g.user %}
+        <span style="margin: 0px 15px 0px 0px">{{ g.user['username'] }}</span>
+        <a href="{{ url_for('auth.logout') }}" class="button">Log Out</a>
+        {% else %}
+        <a
+            href="{{ url_for('auth.register') }}"
+            class="button primary"
+            style="margin: 0px 8px 0px 0px"
+            >Register</a
+        >
+        <a
+            href="{{ url_for('auth.signin') }}"
+            class="button primary"
+            style="margin: 0px 16px 0px 8px; padding: 0em 1.4em 0em 1.4em"
+            >Sign In</a
+        >
+        {% endif %}
 
-			<div id="wrapper">
-					<header id="header" class="alt">
-						<a href="index" class="logo"><strong>DAG-based</strong><span>Distributed Ledger Platform</span></a>
-						<nav>
-								{% if g.user %}
-								  <span style="margin: 0px 15px 0px 0px;">{{ g.user['username'] }}</span>
-								  <a href="{{ url_for('auth.logout') }}" class="button">Log Out</a>
-								{% else %}
-								  <a href="{{ url_for('auth.register') }}" class="button primary" style="margin: 0px 8px 0px 0px;">Register</a>
-								  <a href="{{ url_for('auth.signin') }}" class="button primary" style="margin: 0px 16px 0px 8px;padding: 0em 1.4em 0em 1.4em;">Sign In</a>
-								{% endif %}
+        <a href="#menu">Menu</a>
+    </nav>
+</header>
+{% endblock %}
 
-							<a href="#menu">Menu</a>
-						</nav>
-					</header>
+{% block banner %}
 
-					<nav id="menu">
-						<ul class="links">
-							<li><a href="{{ url_for('index') }}">Home</a></li>
-							<li><a href="{{ url_for('front.show', page='moving') }}">Moving</a></li>
-							<li><a href="{{ url_for('front.show', page='generic') }}">Generic</a></li>
-							<li><a href="{{ url_for('front.show', page='elements') }}">Elements</a></li>
-						</ul>
-						<ul class="actions stacked">
-							{% if g.user %}
-							<li><a href="{{ url_for('rawapi.tx_interface') }}" class="button primary fit">Send</a></li>
-							<li><a href="{{ url_for('auth.logout') }}" class="button fit">Log Out</a></li>
-							{% else %}
-							<li><a href="{{ url_for('auth.signin') }}" class="button primary fit">Send</a></li>
-							<li><a href="{{ url_for('auth.signin') }}" class="button fit">Sign In</a></li>
-							<li><a href="{{ url_for('auth.register') }}" class="button fit">Sign Up</a></li>
-							{% endif %}
-						</ul>
-					</nav>
+<section
+    id="banner"
+    class="major"
+    style="background-image: url(/static/images/banner.jpg)"
+>
+    <div class="inner">
+        <header class="major">
+            <h1>My DAG Test Page</h1>
+        </header>
+        {% with messages = get_flashed_messages() %} {% if messages %} {% for
+        message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %} {% endif %} {% endwith %}
 
-				<!-- Banner -->
-					<section id="banner" class="major" style="background-image: url(/static/images/banner.jpg)">
-						<div class="inner">
-							<header class="major">
-								<h1>My DAG Test Page</h1>
-							</header>
-							{% with messages = get_flashed_messages() %}
-							{% if messages %}
-							  {% for message in messages %}
-								<div class="flash">{{ message }}</div>
-							  {% endfor %}
-							{% endif %}
-						  	{% endwith %}
+        <div class="content">
+            <p>To be continued</p>
+            <ul class="actions">
+                <!-- <li><a href="#one" class="button next scrolly">Get Started</a></li> -->
+                <li>
+                    <a href="download" class="button">Download DAG Ledger</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}
 
-							<div class="content">
-								<p>To be continued</p>
-								<ul class="actions">
-									<!-- <li><a href="#one" class="button next scrolly">Get Started</a></li> -->
-									<li><a href="download" class="button">Download DAG Ledger</a></li>
-								</ul>
-							</div>
-						</div>
-					</section>
+{% block main %}
+<div id="main">
+    <!-- One -->
+    <section id="one" class="tiles">
+        <article>
+            <span class="image">
+                <img src="../static/images/pic01.jpg" alt="" />
+            </span>
+            <header class="major">
+                <h3>
+                    <a href="{{ url_for('rawapi.dag') }}" class="link"
+                        >My Ledger</a
+                    >
+                </h3>
+                <p>Direct Acyclic Graph-based Distributed Ledger</p>
+            </header>
+        </article>
+        <article>
+            <span class="image">
+                <img src="../static/images/pic02.jpg" alt="" />
+            </span>
+            <header class="major">
+                <h3><a href="404" class="link">My Wallet</a></h3>
+                <p>ECDSA-based Hierarchical Deterministic Wallet</p>
+            </header>
+        </article>
+        <article>
+            <span class="image">
+                <img src="../static/images/pic03.jpg" alt="" />
+            </span>
+            <header class="major">
+                <h3><a href="landing" class="link">TBC</a></h3>
+                <p>TBC</p>
+            </header>
+        </article>
+        <article>
+            <span class="image">
+                <img src="../static/images/pic04.jpg" alt="" />
+            </span>
+            <header class="major">
+                <h3><a href="landing" class="link">TBC</a></h3>
+                <p>TBC</p>
+            </header>
+        </article>
+        <article>
+            <span class="image">
+                <img src="../static/images/pic05.jpg" alt="" />
+            </span>
+            <header class="major">
+                <h3><a href="landing" class="link">TBC</a></h3>
+                <p>TBC</p>
+            </header>
+        </article>
+        <article>
+            <span class="image">
+                <img src="../static/images/pic06.jpg" alt="" />
+            </span>
+            <header class="major">
+                <h3><a href="landing" class="link">TBC</a></h3>
+                <p>TBC</p>
+            </header>
+        </article>
+    </section>
 
-				<!-- Main -->
-					<div id="main">
+    <!-- Two -->
+    <section id="two">
+        <div class="inner">
+            <header class="major">
+                <h2>TBC</h2>
+            </header>
+            <p>TBC</p>
+            <ul class="actions">
+                <li><a href="landing" class="button next">Get Started</a></li>
+            </ul>
+        </div>
+    </section>
+</div>
 
-						<!-- One -->
-							<section id="one" class="tiles">
-								<article>
-									<span class="image">
-										<img src="../static/images/pic01.jpg" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="{{ url_for('rawapi.dag') }}" class="link">My Ledger</a></h3>
-										<p>Direct Acyclic Graph-based Distributed Ledger</p>
-									</header>
-								</article>
-								<article>
-									<span class="image">
-										<img src="../static/images/pic02.jpg" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="404" class="link">My Wallet</a></h3>
-										<p>ECDSA-based Hierarchical Deterministic Wallet</p>
-									</header>
-								</article>
-								<article>
-									<span class="image">
-										<img src="../static/images/pic03.jpg" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing" class="link">TBC</a></h3>
-										<p>TBC</p>
-									</header>
-								</article>
-								<article>
-									<span class="image">
-										<img src="../static/images/pic04.jpg" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing" class="link">TBC</a></h3>
-										<p>TBC</p>
-									</header>
-								</article>
-								<article>
-									<span class="image">
-										<img src="../static/images/pic05.jpg" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing" class="link">TBC</a></h3>
-										<p>TBC</p>
-									</header>
-								</article>
-								<article>
-									<span class="image">
-										<img src="../static/images/pic06.jpg" alt="" />
-									</span>
-									<header class="major">
-										<h3><a href="landing" class="link">TBC</a></h3>
-										<p>TBC</p>
-									</header>
-								</article>
-							</section>
-
-						<!-- Two -->
-							<section id="two">
-								<div class="inner">
-									<header class="major">
-										<h2>TBC</h2>
-									</header>
-									<p>TBC</p>
-									<ul class="actions">
-										<li><a href="landing" class="button next">Get Started</a></li>
-									</ul>
-								</div>
-							</section>
-
-					</div>
-
-
-
-
-			</div>
-		<!-- Scripts -->
-			<script src="../static/js/jquery.min.js"></script>
-			<script src="../static/js/jquery.scrolly.min.js"></script>
-			<script src="../static/js/jquery.scrollex.min.js"></script>
-			<script src="../static/js/browser.min.js"></script>
-			<script src="../static/js/breakpoints.min.js"></script>
-			<script src="../static/js/util.js"></script>
-			<script src="../static/js/main.js"></script>
-
-	</body>
-</html>
+{% endblock %}
