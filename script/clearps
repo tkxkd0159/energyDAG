@@ -1,0 +1,4 @@
+#!/bin/bash
+
+kill -15 `pgrep python`
+kill -15 `pgrep flask`
