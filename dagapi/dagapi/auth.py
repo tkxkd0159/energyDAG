@@ -114,7 +114,7 @@ def signin():
 @auth.route("/addkey")
 def add_more_key():
     g.wallet.add_newkey_from_master()
-    return redirect(url_for("tx_interface"))
+    return redirect(url_for("rawapi.tx_interface"))
 
 
 
