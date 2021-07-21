@@ -72,7 +72,7 @@ print(digest)
 특정 폴더에 개별 스마트 컨트랙트를 개별 파일로 저장, 이에 대한 해쉬 값을 set으로 구성  
 해당 set에 그 해쉬 값 없으면 스마트 컨트랙트를 개별 `.py`로 저장
 
-# Implementation
+# Details
 
 P2P network에서는 처음에 본인이 주변 노드 정보 가지고 있고 gossip형태로 전파한다.  
 torrent에서도 peer들의 정보들을 가지고 있는 서버인 Tracker가 있다. (semi-private 느낌으로 처음 노드 구성 시 추천(or 기본) peer list를 거점 노드로부터 받아오게 하자)  
