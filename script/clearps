@@ -2,3 +2,4 @@
 
 kill -15 `pgrep python`
 kill -15 `pgrep flask`
+echo "Complete server down"

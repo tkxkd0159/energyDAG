@@ -1,5 +1,11 @@
 # Setting
 `curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers`
+
+### Server down
+```bash
+kill -15 `ps -e|grep python|awk '{print $1}'`
+kill -15 `ps -e|grep flask|awk '{print $1}'`
+```
 ## Install
 ```
 pip install -r requirements.txt
