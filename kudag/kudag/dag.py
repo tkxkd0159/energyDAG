@@ -1,4 +1,4 @@
-import sys
+from sys import exc_info
 from dataclasses import dataclass, field
 from time import time
 from typing import NewType, TypeVar, Union
@@ -8,15 +8,11 @@ from copy import deepcopy
 
 from kudag.crypto import sha3_256
 
-
 Tx = NewType("Tx", object)
-TxHash = TypeVar("TxHash", str, bytes)
+_Hash = TypeVar("_Hash", str, bytes)
 TxID = NewType("TxID", str)
 
 TX_POOL = []
-
-
-
 
 class Status(Enum):
     pending = auto()
@@ -119,41 +115,69 @@ class TX:
         signature = pvtK.sign_deterministic(txhash)
         self.sign = signature.hex()
 
+    def sel_prts(self):
+        pass
+
 
 class DAG:
     """[summary]
     :param db: levelDB instance
     """
-    def __init__(self, db):
+    def __init__(self, db, sdb):
 
-        self.txs: dict[TxHash, dict] = {}
+        self.txs: dict[TxID, dict] = {}
         self.txid_list: list[str] = []
         self.balances: dict[str, int] = {}
         self.db = db
+        self.sdb = sdb
 
-    def add_tx(self, TX: Tx):
-        tx_key = TX.hash(make_txid=True).hexdigest()
-        tx_value = TX.serialize()
-        self.txs[tx_key] = tx_value
-        tx_str = json.dumps(tx_value)
-        self.db.put(tx_key.encode(), tx_str.encode())
+        self._make_state(self.sdb, is_initial=True)
+
+    def add_tx(self, tx: Tx):
+        if tx.from_ != "":
+            self.balances[tx.from_] = self.balances.get(tx.from_, 0) - int(tx.data['value'])
+        if tx.to_ != "":
+            self.balances[tx.to_] = self.balances.get(tx.to_, 0) + int(tx.data['value'])
+
+        if self._make_state(self.sdb, tx.from_, tx.to_):
+            tx_key = tx.hash(make_txid=True).hexdigest()
+            tx_value = tx.serialize()
+            self.txs[tx_key] = tx_value
+            tx_str = json.dumps(tx_value)
+            self.db.put(tx_key.encode(), tx_str.encode())
 
         return tx_key, tx_str
 
     def rm_tx(self, txids: list[TxID]):
+
         for txid in txids:
             self.db.delete(txid.encode())
             del self.txs[txid]
             self.txid_list.remove(txid)
 
-    def _make_state(self, is_initial=False, tx_data: Tx=None):
+    def _make_state(self, statedb, from_: str=None, to_: str=None, is_initial=False):
         if is_initial:
-            if tx_data.status == Status.confirmed:
-                pass
+            balances = self.load_dag()
+            with statedb.write_batch() as wb:
+                for id, balance in balances.items():
+                    wb.put(id.encode(), str(balance).encode())
 
-    @staticmethod
-    def get_state():
-        pass
+        else:
+            try:
+                v1 = str(self.balances[from_])
+                v2 = str(self.balances[to_])
+                self.sdb.put(from_.encode(), v1.encode())
+                self.sdb.put(to_.encode(), v2.encode())
+                return True
+            except:
+                return False
+
+    def get_state_from_sdb(self):
+        for id, balance in self.sdb:
+            id = id.decode()
+            balance = int(balance.decode())
+            self.balances[id] = balance
+        return self.balances
 
     def load_dag(self):
         try:
@@ -166,21 +190,28 @@ class DAG:
                 tx_data = TX.deserialize(v)
                 if tx_data.status == Status.confirmed:
                     if tx_data.from_ != "":
-                        self.balances[tx_data.from_] = self.balances.get(tx_data.from_, 0) - tx_data.data['value']
+                        self.balances[tx_data.from_] = self.balances.get(tx_data.from_, 0) - int(tx_data.data['value'])
                     if tx_data.to_ != "":
-                        self.balances[tx_data.to_] = self.balances.get(tx_data.to_, 0) + tx_data.data['value']
+                        self.balances[tx_data.to_] = self.balances.get(tx_data.to_, 0) + int(tx_data.data['value'])
 
-            return True
+            return self.balances
 
         except:
-            e = sys.exc_info()[0]
+            e = exc_info()
             print(e)
             return False
 
-if __name__ == "__main__":
-    from kudag.db import init_db
+    def validate_tx(self, tx: Tx, wallet):
+        if tx.from_ in wallet.addr.values():
+            tx.status = Status.confirmed
+        return True
 
-    mydag = DAG(init_db())
-    # mydag.add_tx(TX())
-    mydag.load_dag()
-    print(mydag.txs)
+    def get_balance(self):
+        pass
+
+
+if __name__ == "__main__":
+    from kudag import MY_DB, MY_SDB
+    mydag = DAG(MY_DB, MY_SDB)
+    balances = mydag.get_state_from_sdb()
+    print(balances)

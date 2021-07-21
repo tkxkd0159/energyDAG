@@ -7,7 +7,7 @@
 * Cryptographic Process
 * Directed Acyclic-based Ledger with LevelDB
 * Bash scripts for platform initialization
-
+* Simple simulation with visualization
 ### CSS opensource
 ```
 html5up.net | @ajlkn
@@ -16,8 +16,11 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 # Setting
 `curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers`
 
-### Server down
+### Server Up & Down
 ```bash
+./script/init_script --http port
+python p2p_srv.py --port port
+
 kill -15 `ps -e|grep python|awk '{print $1}'`
 kill -15 `ps -e|grep flask|awk '{print $1}'`
 ```

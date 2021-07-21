@@ -32,13 +32,12 @@ def load_logged_in_user():
         g.user = (
             get_db().execute("SELECT * FROM user WHERE idx = ?", (user_id,)).fetchone()
         )
-
-    if my_pwhash is None:
-        g.wallet = None
-    else:
-        mywallet = Wallet(pwhash=my_pwhash)
-        mywallet.init()
-        g.wallet = mywallet
+        if my_pwhash is None:
+            g.wallet = None
+        else:
+            mywallet = Wallet(pwhash=my_pwhash)
+            mywallet.init()
+            g.wallet = mywallet
 
 
 

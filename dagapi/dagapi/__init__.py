@@ -2,11 +2,7 @@ from pathlib import Path
 from flask import Flask, request, render_template, escape
 from flask_cors import CORS
 
-from kudag import MY_DB
 from kudag.param import HTTP_PORT
-
-
-
 
 def create_app(test_config=None):
 
