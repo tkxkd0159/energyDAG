@@ -43,7 +43,7 @@
                 </ul>
                 <ul class="actions stacked">
                     {% if g.user %}
-                    <li><a href="{{ url_for('tx_interface') }}" class="button primary fit">Send</a></li>
+                    <li><a href="{{ url_for('rawapi.tx_interface') }}" class="button primary fit">Send</a></li>
                     <li><a href="{{ url_for('auth.logout') }}" class="button fit">Log Out</a></li>
                     {% else %}
                     <li><a href="{{ url_for('auth.signin') }}" class="button primary fit">Send</a></li>
