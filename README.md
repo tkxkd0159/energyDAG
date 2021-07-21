@@ -1,3 +1,18 @@
+# Implementaion Lists
+* Energy Platform Frontend
+* Energy Platform Backend (http)
+* WebSocket Handler (thread programming)
+* Hierarchical Deterministic Wallet
+* Relational Database for accounts
+* Cryptographic Process
+* Directed Acyclic-based Ledger with LevelDB
+* Bash scripts for platform initialization
+
+### CSS opensource
+```
+html5up.net | @ajlkn
+Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+```
 # Setting
 `curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers`
 
