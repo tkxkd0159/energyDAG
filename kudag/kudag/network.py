@@ -15,15 +15,18 @@ async def init_ws_connection(uri):
         ws = await websockets.connect(uri)
         return ws
     except ConnectionRefusedError:
-        print(f" \n >>> {uri} is unhealthy\n")
+        print(f" ! {uri} is unhealthy\n")
 
 async def recv_handler(ws, addr):
 
     await ws.send("Complete ping-pong test")
     print(f" * WebSocket receiver connect to {addr}", flush=True)
-    async for msg in ws:
-        print(f"<<<< {msg}")
-
+    try:
+        async for msg in ws:
+            print(f"<<<< {msg}")
+    except websockets.exceptions.ConnectionClosedError:
+        # TODO : need to make reconnection algorithm
+        print(f" * The connection to {addr} has been lost", flush=True)
 
 async def ws_worker(addr):
 
@@ -43,10 +46,8 @@ def deploy_ws_worker(p):
     t = threading.Thread(target=asyncio.run, args=(ws_worker(p),))
     t.daemon = True
     t.start()
-    return True
 
 async def _broadcast(msg):
-    await asyncio.sleep(0.1)
     # print("my websocket list :", WSS, flush=True)
     for ws in WSS:
         await ws.send(msg)
@@ -54,8 +55,7 @@ async def _broadcast(msg):
 
 def broadcast(msg):
     print(" * Broadcasting your TX")
-    t = threading.Thread(target=asyncio.run, args=(_broadcast(msg),))
-    t.daemon = True
+    t = threading.Thread(target=asyncio.run, args=(_broadcast(msg),), daemon=True)
     t.start()
     t.join()
     print(" * Complete broadcasting ")

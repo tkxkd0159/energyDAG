@@ -11,11 +11,7 @@ from dagapi.rest_schema import TxSchema
 from kudag import MY_DB, MY_SDB
 from kudag.param import PEERS
 from kudag.dag import TX, DAG
-from kudag.wallet import Wallet
-import kudag.network
-
-DATA = {"action": "minus"}
-Jheader = {'Content-Type': 'application/json'}
+import kudag.network as net
 
 rawapi = Blueprint('rawapi', __name__, url_prefix='/api')
 rapi = Api(rawapi)
@@ -45,21 +41,6 @@ def get_state():
         for key, value in sn:
             temp[key.decode()] = json.loads(value.decode())
     return temp
-
-
-# TODO : request call after get broadcasting tx
-@rawapi.route('/broadcast', methods=['GET', 'POST'])
-def broadcast():
-    if request.method == "GET":
-        for i in PEERS:
-            r = requests.post(url=i, headers=Jheader, data=dumps(DATA))
-            print(r.text, flush=True)
-
-        return "Success Broadcasting\n"
-
-    elif request.method == "POST":
-        req = request.json
-        return req
 
 @rawapi.route('/peers', methods=['GET', 'POST'])
 def handle_peer():
@@ -110,7 +91,8 @@ def tx_interface():
 
         target_tx = TX(from_=from_, to_=to_, data={"value": value_})
         if my_dag.validate_tx(target_tx, g.wallet):
-            tx_id, _ = my_dag.add_tx(target_tx)
+            tx_id, tx_str = my_dag.add_tx(target_tx)
+            net.broadcast(dumps({tx_id: tx_str}))
             # print(f'TX ID : {tx_id}', flush=True)
         return redirect(rapi.url_for(DAG_API))
 

@@ -13,7 +13,7 @@ async def consumer(msg, ws, path):
         await ws.send("route to /test")
     else:
         print(msg)
-        await ws.send(msg)
+        # await ws.send(msg)
 
 async def consumer_handler(websocket, path):
     # await websocket.send("Start WebSocket ping test")
