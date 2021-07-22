@@ -110,8 +110,11 @@ def tx_interface():
 
         target_tx = TX(from_=from_, to_=to_, data={"value": value_})
         if my_dag.validate_tx(target_tx, g.wallet):
-            print("start validate", flush=True)
             tx_id, _ = my_dag.add_tx(target_tx)
             # print(f'TX ID : {tx_id}', flush=True)
         return redirect(rapi.url_for(DAG_API))
 
+
+@rawapi.route('/extx', methods=['POST'])
+def get_tx_from_external():
+    pass

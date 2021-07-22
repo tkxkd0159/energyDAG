@@ -110,7 +110,7 @@ class TX:
             self.id = myhash.digest().hex()
         return myhash
 
-    def addSign(self, pvtK):
+    def add_sign(self, pvtK):
         txhash = self.hash().digest()
         signature = pvtK.sign_deterministic(txhash)
         self.sign = signature.hex()
@@ -202,12 +202,16 @@ class DAG:
             return False
 
     def validate_tx(self, tx: Tx, wallet):
-        if tx.from_ in wallet.addr.values():
-            tx.status = Status.confirmed
-        return True
+        for idx, addr in wallet.addr.items():
+            if addr == tx.from_:
+                tx.add_sign(wallet.sk[idx])
+                tx.status = Status.confirmed
+                return True
 
-    def get_balance(self):
-        pass
+        return False
+
+    def get_balance(self, addr: str):
+        return self.balances[addr]
 
 
 if __name__ == "__main__":

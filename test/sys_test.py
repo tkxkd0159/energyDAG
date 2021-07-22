@@ -18,7 +18,7 @@ def keygen():
     mykey = createPrivateKey()
     myvkey = createPublicKey(mykey)
     test = TX()
-    test.addSign(mykey)
+    test.add_sign(mykey)
 
     return myvkey.verify(bytes.fromhex(test.sign), test.hash().digest())
 
