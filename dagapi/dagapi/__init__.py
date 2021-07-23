@@ -1,20 +1,8 @@
-import sys
 from pathlib import Path
-from flask import Flask, request, session, render_template, escape, redirect, url_for
+from flask import Flask, request, render_template, escape
 from flask_cors import CORS
-from flask_restful import Resource, Api, abort
-from webargs.flaskparser import use_args
 
-from kudag import MY_DAG, MY_DB
-from kudag.dag import TxHash, TX
-from kudag.wallet import Wallet
-from kudag.param import HTTP_PORT, P2P_PORT
-
-from dagapi.rest_schema import TxSchema
-from dagapi.auth import login_required
-
-
-
+from kudag.param import HTTP_PORT
 
 def create_app(test_config=None):
 
@@ -26,6 +14,7 @@ def create_app(test_config=None):
     ##################################################
     app = Flask(__name__)
     CORS(app)
+
     app.config.from_mapping(
         SECRET_KEY='TPdlwotmd4aLWRbyVq8zu9v82dWYW1',
         UPLOAD_FOLDER=str(base_path.joinpath('download')),
@@ -37,25 +26,16 @@ def create_app(test_config=None):
 
     from dagapi.front import front
     from dagapi.auth import auth
+    from dagapi.rawapi import rawapi
     app.register_blueprint(front)
     app.register_blueprint(auth)
-
-
-    api = Api(app)
-
+    app.register_blueprint(rawapi)
 
     @app.errorhandler(404)
     def page_not_found(e):
         # jsonify(error=str(e)).get_data()  -> {"error":"404 Not Found: Resource not found"}
         return render_template('404.html'), 404
 
-    def abort_if_dag_not_exist():
-        if MY_DAG.txs == {}:
-            abort(404, message="DAG doesn't exist")
-
-    def abort_if_tx_not_exist(txid: TxHash):
-        if txid not in MY_DAG.txs:
-            abort(404, message=f"TXID << {txid} >> doesn't exist")
 
 
     # Use @app.route
@@ -64,65 +44,7 @@ def create_app(test_config=None):
         if request.method == 'GET':
             return render_template('index.html')
 
-    # flask_restful use only for JSON
-    class DAG_API(Resource):
-
-        def get(self, txid=0):
-            if txid == 0:
-                abort_if_dag_not_exist()
-                return MY_DAG.txs
-            else:
-                abort_if_tx_not_exist(txid)
-                return MY_DAG.txs[txid]
-
-        @use_args(TxSchema())
-        def post(self, args):
-            MY_DAG.txs[args["id"]] = args
-
-            return 200
-
-    api.add_resource(DAG_API, '/dag', '/dag/<txid>', endpoint='api.dag')
-
-    @app.route('/tx', methods=['GET', 'POST'])
-    @login_required
-    def tx_interface():
-        if request.method == "GET":
-            my_pwhash = session.get("pwhash")
-            mywallet = Wallet(pwhash=my_pwhash)
-            mywallet.init()
-            addr_list = []
-            for i in range(mywallet.key_nums):
-                addr_list.append((i, mywallet.addr[str(i)]))
-
-            return render_template('tx.html', addrs=addr_list)
-
-        elif request.method == "POST":
-            req = request.form
-
-            from_ = req['from-category']
-            to_ = req['to_']
-            value_ = req['value_']
-            contract_code = req['CC']
-            print(from_, to_, value_, contract_code, file=sys.stdout)
-
-            target_tx = TX(from_=from_, to_=to_, data={"value": value_})
-            tx_id, _ = MY_DAG.add_tx(target_tx)
-            # print(f'TX ID : {tx_id}', file=sys.stderr)
-
-            return redirect(api.url_for(DAG_API))
-
-
     ##################################################################
-
-    @app.route('/get_state')
-    def get_state():
-        import json
-        temp = {}
-        with MY_DB.snapshot() as sn:
-            for key, value in sn:
-                temp[key.decode()] = json.loads(value.decode())
-
-        return temp
 
 
     @app.route('/path/<path:subpath>')

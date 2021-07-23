@@ -32,13 +32,12 @@ def load_logged_in_user():
         g.user = (
             get_db().execute("SELECT * FROM user WHERE idx = ?", (user_id,)).fetchone()
         )
-
-    if my_pwhash is None:
-        g.wallet = None
-    else:
-        mywallet = Wallet(pwhash=my_pwhash)
-        mywallet.init()
-        g.wallet = mywallet
+        if my_pwhash is None:
+            g.wallet = None
+        else:
+            mywallet = Wallet(pwhash=my_pwhash)
+            mywallet.init()
+            g.wallet = mywallet
 
 
 
@@ -114,7 +113,7 @@ def signin():
 @auth.route("/addkey")
 def add_more_key():
     g.wallet.add_newkey_from_master()
-    return redirect(url_for("tx_interface"))
+    return redirect(url_for("rawapi.tx_interface"))
 
 
 

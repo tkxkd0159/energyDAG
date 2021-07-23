@@ -1,4 +1,37 @@
+# Implementaion Lists
+* Energy Platform Frontend
+    * Jinja template engine 
+* Energy Platform Backend (http)
+    * Flask 
+* WebSocket Handler (thread programming)
+* Hierarchical Deterministic Wallet
+    * ECDSA-based
+* Relational Database for accounts
+    * SQLite 
+* Cryptographic Process
+* Directed Acyclic-based Ledger with LevelDB
+* Bash scripts 
+    * Platform initialization
+    * DB initialization
+    * Clear process
+* Simple simulation with visualization
+    * OpenCV-based 
+### CSS opensource
+```
+html5up.net | @ajlkn
+Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+```
 # Setting
+`curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers`
+
+### Server Up & Down
+```bash
+./script/init_script --http port
+python p2p_srv.py --port port
+
+kill -15 `ps -e|grep python|awk '{print $1}'`
+kill -15 `ps -e|grep flask|awk '{print $1}'`
+```
 ## Install
 ```
 pip install -r requirements.txt
@@ -47,7 +80,7 @@ print(digest)
 특정 폴더에 개별 스마트 컨트랙트를 개별 파일로 저장, 이에 대한 해쉬 값을 set으로 구성  
 해당 set에 그 해쉬 값 없으면 스마트 컨트랙트를 개별 `.py`로 저장
 
-# Implementation
+# Details
 
 P2P network에서는 처음에 본인이 주변 노드 정보 가지고 있고 gossip형태로 전파한다.  
 torrent에서도 peer들의 정보들을 가지고 있는 서버인 Tracker가 있다. (semi-private 느낌으로 처음 노드 구성 시 추천(or 기본) peer list를 거점 노드로부터 받아오게 하자)  

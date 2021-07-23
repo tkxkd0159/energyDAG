@@ -37,13 +37,13 @@
             <nav id="menu">
                 <ul class="links">
                     <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('front.show', page='landing') }}">Landing</a></li>
+                    <li><a href="{{ url_for('front.show', page='moving') }}">Moving</a></li>
                     <li><a href="{{ url_for('front.show', page='generic') }}">Generic</a></li>
                     <li><a href="{{ url_for('front.show', page='elements') }}">Elements</a></li>
                 </ul>
                 <ul class="actions stacked">
                     {% if g.user %}
-                    <li><a href="{{ url_for('tx_interface') }}" class="button primary fit">Send</a></li>
+                    <li><a href="{{ url_for('rawapi.tx_interface') }}" class="button primary fit">Send</a></li>
                     <li><a href="{{ url_for('auth.logout') }}" class="button fit">Log Out</a></li>
                     {% else %}
                     <li><a href="{{ url_for('auth.signin') }}" class="button primary fit">Send</a></li>
