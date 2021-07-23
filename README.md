@@ -1,13 +1,21 @@
 # Implementaion Lists
 * Energy Platform Frontend
+    * Jinja template engine 
 * Energy Platform Backend (http)
+    * Flask 
 * WebSocket Handler (thread programming)
 * Hierarchical Deterministic Wallet
+    * ECDSA-based
 * Relational Database for accounts
+    * SQLite 
 * Cryptographic Process
 * Directed Acyclic-based Ledger with LevelDB
-* Bash scripts for platform initialization
+* Bash scripts 
+    * Platform initialization
+    * DB initialization
+    * Clear process
 * Simple simulation with visualization
+    * OpenCV-based 
 ### CSS opensource
 ```
 html5up.net | @ajlkn
