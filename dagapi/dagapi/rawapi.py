@@ -1,6 +1,6 @@
-import requests
+import json
 from json import dumps
-from flask import Blueprint, request, jsonify, session, redirect, render_template, g
+from flask import Blueprint, request, jsonify, redirect, render_template, g
 from flask_restful import Resource, Api, abort
 from webargs.flaskparser import use_args
 
@@ -8,23 +8,43 @@ from webargs.flaskparser import use_args
 from dagapi.auth import login_required
 from dagapi.rest_schema import TxSchema
 
-from kudag import MY_DB, MY_SDB
-from kudag.param import PEERS
+from kudag.param import PEERS, HTTP_PORT
 from kudag.dag import TX, DAG
 import kudag.network as net
+from kudag.db import init_db, init_state_db
 
 rawapi = Blueprint('rawapi', __name__, url_prefix='/api')
 rapi = Api(rawapi)
 
-my_dag = DAG(MY_DB, MY_SDB)
-my_dag.load_dag()
+def load_dagdb():
+    if "dagdb" not in g:
+        g.dagdb = init_db(HTTP_PORT)
 
+def load_dagsdb():
+    if "dagsdb"  not in g:
+        g.dagsdb = init_state_db(HTTP_PORT)
+
+def load_dag():
+
+    load_dagdb()
+    load_dagsdb()
+    if "dag" not in g:
+        g.dag = DAG(g.dagdb, g.dagsdb)
+        g.dag.load_dag()
+
+def close_dag(e=None):
+    db = g.pop("dagdb", None)
+    sdb = g.pop("dagsdb", None)
+    if db is not None:
+        db.close()
+    if sdb is not None:
+        sdb.close()
 
 def abort_if_dag_not_exist():
-    if my_dag.txs == {}:
+    if g.dag.txs == {}:
         abort(404, message="DAG doesn't exist")
 def abort_if_tx_not_exist(txid: str):
-    if txid not in my_dag.txs:
+    if txid not in g.dag.txs:
         abort(404, message=f"TXID << {txid} >> doesn't exist")
 
 @rawapi.route('/', methods=('GET', 'POST'))
@@ -35,9 +55,9 @@ def index():
 
 @rawapi.route('/states')
 def get_state():
-    import json
+    load_dagsdb()
     temp = {}
-    with MY_DB.snapshot() as sn:
+    with g.dagsdb.snapshot() as sn:
         for key, value in sn:
             temp[key.decode()] = json.loads(value.decode())
     return temp
@@ -57,16 +77,18 @@ def handle_peer():
 
 class DAG_API(Resource):
     def get(self, txid=0):
+        load_dag()
         if txid == 0:
             abort_if_dag_not_exist()
-            return my_dag.txs
+            return g.dag.txs
         else:
             abort_if_tx_not_exist(txid)
-            return my_dag.txs[txid]
+            return g.dag.txs[txid]
 
     @use_args(TxSchema())
     def post(self, args):
-        my_dag.txs[args["id"]] = args
+        load_dag()
+        g.dag.txs[args["id"]] = args
         return 200
 rapi.add_resource(DAG_API, '/dag', '/dag/<txid>', endpoint='dag')
 
@@ -74,15 +96,13 @@ rapi.add_resource(DAG_API, '/dag', '/dag/<txid>', endpoint='dag')
 @login_required
 def tx_interface():
     if request.method == "GET":
-        # my_pwhash = session.get("pwhash")
-        # mywallet = Wallet(pwhash=my_pwhash)
-        # mywallet.init()
         addr_list = []
         mywallet = g.wallet
         for i in range(mywallet.key_nums):
             addr_list.append((i, mywallet.addr[str(i)]))
         return render_template('tx.html', addrs=addr_list)
     elif request.method == "POST":
+        load_dag()
         req = request.form
         from_ = req['from-category']
         to_ = req['to_']
@@ -90,8 +110,8 @@ def tx_interface():
         contract_code = req['CC']
 
         target_tx = TX(from_=from_, to_=to_, data={"value": value_})
-        if my_dag.validate_tx(target_tx, g.wallet):
-            tx_id, tx_str = my_dag.add_tx(target_tx)
+        if g.dag.validate_tx(target_tx, g.wallet):
+            tx_id, tx_str = g.dag.add_tx(target_tx)
             net.broadcast(dumps({tx_id: tx_str}))
             # print(f'TX ID : {tx_id}', flush=True)
         return redirect(rapi.url_for(DAG_API))

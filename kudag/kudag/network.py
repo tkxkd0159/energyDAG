@@ -1,7 +1,6 @@
 import asyncio
 import threading
 import websockets
-import json
 from enum import Enum, auto
 
 from kudag.param import WSS
