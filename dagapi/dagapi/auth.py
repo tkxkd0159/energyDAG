@@ -22,20 +22,21 @@ def login_required(f):
 @auth.before_app_request
 def load_logged_in_user():
 
+    # ! Need to implement Multi session
+    idx = session.get("uidx")
     user_id = session.get("user_id")
     my_pwhash = session.get("pwhash")
-
 
     if user_id is None:
         g.user = None
     else:
         g.user = (
-            get_db().execute("SELECT * FROM user WHERE idx = ?", (user_id,)).fetchone()
+            get_db().execute("SELECT * FROM user WHERE idx = ?", (idx,)).fetchone()
         )
         if my_pwhash is None:
             g.wallet = None
         else:
-            mywallet = Wallet(pwhash=my_pwhash)
+            mywallet = Wallet(g.user['username'], g.user["password"].split("$")[2])
             mywallet.init()
             g.wallet = mywallet
 
@@ -97,12 +98,14 @@ def signin():
             error = "Incorrect password!"
 
         if error is None:
+            myid = user["username"]
             my_pwhash = user["password"].split("$")[2]
-            mywallet = Wallet(pwhash=my_pwhash)
+            mywallet = Wallet(myid, my_pwhash)
             mywallet.init()
 
             session.clear()
-            session["user_id"] = user["idx"]
+            session["uidx"] = user["idx"]
+            session["user_id"] = myid
             session["pwhash"] = my_pwhash
             return redirect(url_for("index"))
 

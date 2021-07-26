@@ -22,10 +22,19 @@ html5up.net | @ajlkn
 Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 ```
 # Setting
-`curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers`
+```bash
+curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers
+# or
+export PEERS='[ws://127.0.0.1:16002, ws://127.0.0.1:16003]'
+
+<addr:port>/api/genesis
+```
 
 ### Server Up & Down
 ```bash
+conda activate energy
+./script/init_script --new --http <port>
+
 ./script/init_script --http port
 python p2p_srv.py --port port
 
@@ -44,15 +53,6 @@ pip install -e ./dagapi
 sass static/sass/main.scss static/css/main.css
 ```
 
-## Flask
-```bash
-conda activate energy
-export FLASK_APP=dagapi  # set FLASK_APP=dagapi
-flask run # app
-
-export FLASK_APP=dagapi
-flask init-db # Run on another terminal, RDB initialization
-```
 ## jinja
 ```
 {% block sidebar %}
@@ -62,9 +62,10 @@ flask init-db # Run on another terminal, RDB initialization
 {% endblock sidebar %}
 ```
 ## TODO
-블록체인처럼 초반에 initialization해서 데이터 접근이 빠른 state DB를 만들어 두는게 중요  
-이후 ledger가 갱신될 때마다 state DB도 갱신 -> 상대적으로 오버헤드 적음  
-TODO : **P2P Websocket, Wallet, Peer table,  DB(실제 데이터 삽입), 각종 DAG관련 기능**
+1. Upgrade state DB & Prune DAG(optional)
+2. JSON-RPC
+3. Select parents, Trace children
+4. Browser multi session
 
 # Smart Contract
 ```python

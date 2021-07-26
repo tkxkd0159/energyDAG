@@ -5,6 +5,7 @@ from typing import NewType, TypeVar, Union
 from enum import Enum, auto
 import json
 from copy import deepcopy
+from pathlib import Path
 
 from kudag.crypto import sha3_256
 
@@ -133,13 +134,24 @@ class DAG:
 
         self._make_state(self.sdb, is_initial=True)
 
-    def add_tx(self, tx: Tx):
-        if tx.from_ != "":
-            self.balances[tx.from_] = self.balances.get(tx.from_, 0) - int(tx.data['value'])
-        if tx.to_ != "":
+    def add_tx(self, tx: Tx, genesis=False):
+        if genesis:
             self.balances[tx.to_] = self.balances.get(tx.to_, 0) + int(tx.data['value'])
+            tx.status = Status.confirmed
 
-        if self._make_state(self.sdb, tx.from_, tx.to_):
+        else:
+            if tx.from_ != "" and self.balances[tx.from_] > int(tx.data['value']):
+                self.balances[tx.from_] = self.balances.get(tx.from_, 0) - int(tx.data['value'])
+
+                if tx.to_ != "":
+                    self.balances[tx.to_] = self.balances.get(tx.to_, 0) + int(tx.data['value'])
+                else:
+                    return False
+            else:
+                return False
+
+
+        if self._make_state(self.sdb, tx.from_, tx.to_, genesis=genesis):
             tx_key = tx.hash(make_txid=True).hexdigest()
             tx_value = tx.serialize()
             self.txs[tx_key] = tx_value
@@ -155,18 +167,28 @@ class DAG:
             del self.txs[txid]
             self.txid_list.remove(txid)
 
-    def _make_state(self, statedb, from_: str=None, to_: str=None, is_initial=False):
+    def start_genesis(self):
+        gendir = Path(__file__).parent
+        p = gendir.joinpath('genesis.json')
+        with open(str(p)) as f:
+            data = json.load(f)
+        return data
+
+    def _make_state(self, statedb, from_: str=None, to_: str=None, is_initial=False, genesis=False):
         if is_initial:
             balances = self.load_dag()
             with statedb.write_batch() as wb:
                 for id, balance in balances.items():
+                    if id == "genesis":
+                        continue
                     wb.put(id.encode(), str(balance).encode())
 
         else:
             try:
-                v1 = str(self.balances[from_])
+                if not genesis:
+                    v1 = str(self.balances[from_])
+                    self.sdb.put(from_.encode(), v1.encode())
                 v2 = str(self.balances[to_])
-                self.sdb.put(from_.encode(), v1.encode())
                 self.sdb.put(to_.encode(), v2.encode())
                 return True
             except:
@@ -201,7 +223,11 @@ class DAG:
             print(e)
             return False
 
-    def validate_tx(self, tx: Tx, wallet):
+    def validate_tx(self, tx: Tx, wallet=False, external=False):
+        if external:
+            tx.status = Status.confirmed
+            return True
+
         for idx, addr in wallet.addr.items():
             if addr == tx.from_:
                 tx.add_sign(wallet.sk[idx])

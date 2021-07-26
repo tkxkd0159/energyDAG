@@ -23,6 +23,8 @@ def create_app(test_config=None):
 
     from dagapi.rdb import init_dbapp
     init_dbapp(app)
+    from dagapi.rawapi import close_dag
+    app.teardown_appcontext(close_dag)
 
     from dagapi.front import front
     from dagapi.auth import auth

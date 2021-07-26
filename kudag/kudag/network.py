@@ -1,7 +1,6 @@
 import asyncio
 import threading
 import websockets
-import json
 from enum import Enum, auto
 
 from kudag.param import WSS
@@ -49,13 +48,14 @@ def deploy_ws_worker(p):
 
 async def _broadcast(msg):
     # print("my websocket list :", WSS, flush=True)
+    print(" * Broadcasting your TX")
     for ws in WSS:
         await ws.send(msg)
+    print(" * Complete broadcasting ")
+
 
 
 def broadcast(msg):
-    print(" * Broadcasting your TX")
     t = threading.Thread(target=asyncio.run, args=(_broadcast(msg),), daemon=True)
     t.start()
     t.join()
-    print(" * Complete broadcasting ")

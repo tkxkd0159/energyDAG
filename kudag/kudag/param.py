@@ -11,7 +11,12 @@ DIFFICULTY = 0
 
 # os.environ['P2P_PORT'] = '6001'
 HTTP_PORT = getenv('HTTP_PORT') if getenv('HTTP_PORT') is not None else '6001'
-P2P_PORT = getenv('P2P_PORT') if getenv('P2P_PORT') is not None else '16001'
-
-PEERS = getenv('PEERS') if getenv('PEERS') is not None else set(["ws://127.0.0.1:16001", "ws://127.0.0.1:16002"])
+if getenv('PEERS') is not None:
+    p = getenv('PEERS')
+    p = p.lstrip('[')
+    p = p.rstrip(']')
+    p = p.split(', ')
+    PEERS = set(p)
+else:
+    PEERS = set(["ws://127.0.0.1:16001", "ws://127.0.0.1:16002"])
 WSS = set()
