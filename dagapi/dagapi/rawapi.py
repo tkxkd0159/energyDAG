@@ -52,14 +52,26 @@ def index():
     if request.method == "GET":
         return "\nHello I am DAG API\n"
 
+@rawapi.route('/genesis', methods=['GET'])
+def make_genesis():
+    if request.method == "GET":
+        load_dag()
+        data = g.dag.start_genesis()
+        for id, value in data["accounts"].items():
+            tx = TX(from_="genesis", to_=id, data={"value": value})
+            tx_id, tx_str = g.dag.add_tx(tx, genesis=True)
+            print(tx_id, tx_str, flush=True)
+
+    return redirect(rapi.url_for(DAG_API))
+
 
 @rawapi.route('/states')
 def get_state():
-    load_dagsdb()
+    load_dag()
     temp = {}
-    with g.dagsdb.snapshot() as sn:
-        for key, value in sn:
-            temp[key.decode()] = json.loads(value.decode())
+
+    for key, value in g.dagsdb:
+        temp[key.decode()] = json.loads(value.decode())
     return temp
 
 @rawapi.route('/peers', methods=['GET', 'POST'])
@@ -109,14 +121,33 @@ def tx_interface():
         value_ = req['value_']
         contract_code = req['CC']
 
-        target_tx = TX(from_=from_, to_=to_, data={"value": value_})
-        if g.dag.validate_tx(target_tx, g.wallet):
-            tx_id, tx_str = g.dag.add_tx(target_tx)
-            net.broadcast(dumps({tx_id: tx_str}))
-            # print(f'TX ID : {tx_id}', flush=True)
+        tx = TX(from_=from_, to_=to_, data={"value": value_})
+        if g.dag.validate_tx(tx, g.wallet):
+            try:
+                tx_id, tx_str = g.dag.add_tx(tx)
+                print(f"{tx_id} is deployed", flush=True)
+                net.broadcast(dumps({tx_id: tx_str}))
+            except TypeError as e:
+                print(e)
+                print("Sender or Receiver info is not correct", flush=True)
+            except UnboundLocalError:
+                print("Your state DB is locking", flush=True)
         return redirect(rapi.url_for(DAG_API))
 
 
 @rawapi.route('/extx', methods=['POST'])
 def get_tx_from_external():
-    pass
+    if request.method == "POST":
+        load_dag()
+        req =  [v for v in request.json.values()]
+        tx = TX().deserialize(req[0])
+        if g.dag.validate_tx(tx, external=True):
+            try:
+                tx_id, tx_str = g.dag.add_tx(tx)
+                # net.broadcast(dumps({tx_id: tx_str}))
+            except TypeError as e:
+                print(e)
+                print("Sender or Receiver info is not correct", flush=True)
+            except UnboundLocalError:
+                print("Your state DB is locking", flush=True)
+        return jsonify(req)
