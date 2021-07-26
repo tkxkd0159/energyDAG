@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from uuid import uuid4
 from pathlib import Path
 from ecdsa import SigningKey
-
+from hashlib import sha256
 
 from kudag.crypto import createPrivateKey, createPublicKey, createAddr
 from kudag.param import HTTP_PORT
@@ -11,8 +11,11 @@ from kudag.param import HTTP_PORT
 
 class Wallet:
 
-    def __init__(self, pwhash=HTTP_PORT):
-        self.seed = pwhash
+    def __init__(self, user_id, pwhash):
+        s = user_id + pwhash
+        m = sha256()
+        m.update(s.encode())
+        self.seed = m.hexdigest()
         self.path = Path(__file__).parents[2].joinpath(f"wallet/{self.seed}")
         if not self.path.exists():
             self.path.mkdir(parents=True)
