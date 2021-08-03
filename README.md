@@ -1,3 +1,5 @@
+![Python](https://img.shields.io/badge/Python-v3.9.2-blue)
+
 # Implementaion Lists
 * Energy Platform Frontend
     * Jinja template engine 
