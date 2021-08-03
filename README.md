@@ -63,11 +63,6 @@ sass static/sass/main.scss static/css/main.css
     {% endblock inner_sidebar %}
 {% endblock sidebar %}
 ```
-## TODO
-1. Upgrade state DB & Prune DAG(optional)
-2. JSON-RPC
-3. Select parents, Trace children
-4. Browser multi session
 
 # Smart Contract
 ```python
