@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-if ! options=$(getopt -o '' --long new,ws:,http: -- "$@")
+if ! options=$(getopt -o '' --long local,new,ws:,http: -- "$@")
 then
     echo "Usage: up [--new][--ws <port>][--http <port>]
 
@@ -18,9 +18,11 @@ export FLASK_APP=dagapi
 eval set -- "$options"
 while true; do
     case "$1" in
+        --local)
+            LOCAL="true"
+            shift ;;
         --new)
             NEW="true"
-
             shift ;;
         --ws)
             P2P_PORT=$2
@@ -44,5 +46,12 @@ fi
 
 # python ./p2p_srv.py --port $P2P_PORT &
 # flask run -p $HTTP_PORT &
-flask run -p $HTTP_PORT
-echo "Initialize KU-DAG"
+if [[ $LOCAL == "true" ]]; then
+    echo " * Open as localhost"
+    flask run -p $HTTP_PORT
+else
+    echo " * Open as product server"
+    flask run --host=0.0.0.0 -p $HTTP_PORT
+fi
+
+echo " * Initialize KU-DAG"
