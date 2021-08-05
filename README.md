@@ -24,38 +24,41 @@ html5up.net | @ajlkn
 Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 ```
 # Setting
-```bash
-curl -H "Content-Type: application/json" -X POST -d @addr.json http://localhost:6001/api/peers
-# or
-export PEERS='[ws://127.0.0.1:16002, ws://127.0.0.1:16003]'
-
-<addr:port>/api/genesis
-```
-
-### Server Up & Down
-```bash
-conda activate energy
-./script/init_script --new --http <port>
-
-./script/init_script --http port
-python p2p_srv.py --port port
-
-kill -15 `ps -e|grep python|awk '{print $1}'`
-kill -15 `ps -e|grep flask|awk '{print $1}'`
-```
 ## Install
 ```
-pip install -r requirements.txt
 pip install -e ./kudag
 pip install -e ./dagapi
 
+```
+
+## Server Up & Down
+```bash
+conda activate energy
+./script/init_script --new --http <port> --local
+
+./script/init_script --http <port>
+python p2p_srv.py --port <port>
+
+# Set genesis
+curl http://127.0.0.1:6001/api/genesis
+
+
+# Force server down
+kill -15 `ps -e|grep python|awk '{print $1}'`
+kill -15 `ps -e|grep flask|awk '{print $1}'`
+```
+## Add peers for P2P networking
+```bash
+curl -H "Content-Type: application/json" -X POST -d @addr.json http://127.0.0.1:6001/api/peers
+# or
+export PEERS='[ws://127.0.0.1:16002, ws://127.0.0.1:16003]'
 ```
 ## CSS
 ```
 sass static/sass/main.scss static/css/main.css
 ```
 
-## jinja
+## Jinja
 ```
 {% block sidebar %}
     {% block inner_sidebar %}
@@ -102,21 +105,21 @@ Dos(Denial-of-service) 공격을 막기 위해 안전장치 필요 -> 최소 하
 어떤 상태를 잠정 확정된 상태로 생각할 것인가 (Bitcoin은 6개의 블록이 뒤에 더 붙고나서 해당 블록을 잠정 확정 + coinbase TX로 생성된 BTC는 100block 이후 사용가능)
 
 ## Attack vectors
-### Race attack
+### 1) Race attack
 판매자에게 대금 지불하는 TX 보내고 나머지 네트워크 노드들에게는 본인의 다른 계정에 대금을 지불하는 TX를 보내서 double-spending 유도 (후자가 채굴될 가능성 높게 조절)
-### Finney attack
+### 2) Finney attack
 race attack이랑 비슷한데 조건만 맞으면 좀 더 확정적.  
 attacker는 자기 주소 A에서 B로 특정 금액을 전송시키는 TX 만들고 이를 포함하여 블록을 채굴함. (채굴 시 전파 안하고 일단 홀딩)  
 다른 판매자에게 구매하는 TX 생성해서 보내고 그걸 증거로 물건 받음  
 물건 받자마자 나는 내가 채굴한 블록 전파 (판매자에게 보낸 TX는 double-spending TX가 되서 invalidated)  
 -> 성립시키긴 매우 어려움 (다른 miner보다 빠르게 먼저 채굴시키고 다른 miner가 채굴하기 전까지 판매자와의 거래도 성립시켜야 함)
 
-### Vector76 attack (one-confirmation attack)
+### 3) Vector76 attack (one-confirmation attack)
 race + finney attack 느낌. 공격하려는 노드에게만 합법적으로 채굴된 그러나 double-spending을 유도하는 TX를 포함한 블록 전송  
 해쉬 값 확인 시 멀쩡하니까 해당 노드는 안심함 (앞선 방법들은 판매자가 TX가 unconfirmed 상태인데도 믿고 그냥 보내는 경우)  
 따라서 채굴 성공 시 성공확률은 높지만 그만큼 기회비용도 큼 (채굴 보상 + 포함된 트랜잭션들의 수수료)보다 커야 이득임
 
-### Majority attack
+### 4) Majority attack
 Bitcoin에서의 51% attack 같은거 -> 해당 플랫폼의 consensus를 제어할 수 있을정도로 리소스 장악
 
 ## security
