@@ -7,38 +7,14 @@ from webargs.flaskparser import use_args
 
 from dagapi.auth import login_required
 from dagapi.rest_schema import TxSchema
+from dagapi.db import load_dag
 
-from kudag.param import PEERS, HTTP_PORT
-from kudag.dag import TX, DAG
+from kudag.param import PEERS
+from kudag.dag import TX
 import kudag.network as net
-from kudag.db import init_db, init_state_db
 
 rawapi = Blueprint('rawapi', __name__, url_prefix='/api')
 rapi = Api(rawapi)
-
-def load_dagdb():
-    if "dagdb" not in g:
-        g.dagdb = init_db(HTTP_PORT)
-
-def load_dagsdb():
-    if "dagsdb"  not in g:
-        g.dagsdb = init_state_db(HTTP_PORT)
-
-def load_dag():
-
-    load_dagdb()
-    load_dagsdb()
-    if "dag" not in g:
-        g.dag = DAG(g.dagdb, g.dagsdb)
-        g.dag.load_dag()
-
-def close_dag(e=None):
-    db = g.pop("dagdb", None)
-    sdb = g.pop("dagsdb", None)
-    if db is not None:
-        db.close()
-    if sdb is not None:
-        sdb.close()
 
 def abort_if_dag_not_exist():
     if g.dag.txs == {}:
