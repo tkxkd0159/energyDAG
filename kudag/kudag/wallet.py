@@ -6,7 +6,6 @@ from ecdsa import SigningKey
 from hashlib import sha256
 
 from kudag.crypto import createPrivateKey, createPublicKey, createAddr
-from kudag.param import HTTP_PORT
 
 
 class Wallet:
