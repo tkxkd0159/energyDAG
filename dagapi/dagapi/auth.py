@@ -5,7 +5,7 @@ from flask import Blueprint, render_template, abort, redirect, url_for, \
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from dagapi.rdb import get_db
+from dagapi.db import get_rdb
 from kudag.wallet import Wallet
 
 auth = Blueprint('auth', __name__, template_folder='templates', url_prefix='/auth')
@@ -31,7 +31,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = (
-            get_db().execute("SELECT * FROM user WHERE idx = ?", (idx,)).fetchone()
+            get_rdb().execute("SELECT * FROM user WHERE idx = ?", (idx,)).fetchone()
         )
         if my_pwhash is None:
             g.wallet = None
@@ -48,7 +48,7 @@ def register():
         username: str = request.form["walletid"]
         username = username.lower()
         password: str = request.form["walletpw"]
-        db = get_db()
+        db = get_rdb()
         error = None
 
         id_pattern = re.compile(r"^[a-zA-Z]+")
@@ -86,7 +86,7 @@ def signin():
         username = request.form["walletid"]
         username = username.lower()
         password = request.form["walletpw"]
-        db = get_db()
+        db = get_rdb()
         error = None
         user = db.execute(
             "SELECT * FROM user WHERE username = ?", (username,)

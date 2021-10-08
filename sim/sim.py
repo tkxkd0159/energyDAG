@@ -14,6 +14,7 @@ ALERT_INTVL = 50    # '~seconds passed' alert cycle (seconds)
 REVLD_INTVL = 3 # Revalidational interval (seconds)
 
 # arrival set
+ARRIV_TYPE = "poisson"
 UNI_START = 0
 UNI_END = 1
 POI_MEAN = 5
@@ -50,7 +51,7 @@ class Sim:
         self.events = dict()
         self.txs = dict()
 
-    def gen_tx(self, arriv_type="poisson", start: float=None, end: float=None):
+    def gen_tx(self, start: float=None, end: float=None):
         if start is not None:
             t_arriv = start
         else:
@@ -60,16 +61,15 @@ class Sim:
         tx_idx = 0
         tx_invld_cnt = 0
 
-        arriv_dist = {
-            "poisson": random.expovariate(POI_MEAN),
-            "uniform": random.uniform(UNI_START, UNI_END),
-            "const": CONST_TIME
-        }
-
         self.txs = {g_idx: Tx(0, g_idx, is_conf=True) for g_idx in range(-GENESIS_NUM, 0)} #generate genesis
 
         while t_arriv < end:
-            t_arriv += arriv_dist.get(arriv_type)
+            if ARRIV_TYPE == "poisson":
+                t_arriv += random.expovariate(POI_MEAN)
+            elif ARRIV_TYPE == "uniform":
+                t_arriv += random.uniform(UNI_START, UNI_END)
+            else:
+                t_arriv += CONST_TIME
             ntx = Tx(t_arriv, tx_idx)
             self.txs[tx_idx] = ntx
             tx_idx += 1
