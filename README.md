@@ -36,7 +36,7 @@ pip install -e ./dagapi
 conda activate energy
 ./script/init_script --new --http <port> --local
 
-./script/init_script --http <port>
+./script/init_script --http <port> --local
 python p2p_srv.py --port <port>
 
 # Set genesis
