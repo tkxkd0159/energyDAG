@@ -4,7 +4,7 @@ from kudag.network import deploy_ws_worker
 
 
 try:
-    for p in PEERS:
+    for p in PEERS():
         deploy_ws_worker(p)
 except:
     pass

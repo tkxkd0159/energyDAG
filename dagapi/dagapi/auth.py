@@ -1,27 +1,37 @@
 import functools
 import re
-from flask import Blueprint, render_template, abort, redirect, url_for, \
-                  g, request, session, flash
+from flask import (
+    Blueprint,
+    render_template,
+    abort,
+    redirect,
+    url_for,
+    g,
+    request,
+    session,
+    flash,
+)
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from dagapi.db import get_rdb
 from kudag.wallet import Wallet
 
-auth = Blueprint('auth', __name__, template_folder='templates', url_prefix='/auth')
+auth = Blueprint("auth", __name__, template_folder="templates", url_prefix="/auth")
+
 
 def login_required(f):
-
     @functools.wraps(f)
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for("auth.signin"))
         return f(**kwargs)
+
     return wrapped_view
+
 
 @auth.before_app_request
 def load_logged_in_user():
-
     # ! Need to implement Multi session
     idx = session.get("uidx")
     user_id = session.get("user_id")
@@ -36,10 +46,11 @@ def load_logged_in_user():
         if my_pwhash is None:
             g.wallet = None
         else:
-            mywallet = Wallet(g.user['username'], g.user["password"].split("$")[2])
+            if g.user is None:
+                return
+            mywallet = Wallet(g.user["username"], g.user["password"].split("$")[2])
             mywallet.init()
             g.wallet = mywallet
-
 
 
 @auth.route("/register", methods=("GET", "POST"))
@@ -62,7 +73,9 @@ def register():
         elif len(password) < 10:
             error = "Password must be at least 10 characters long"
         elif (
-            db.execute("SELECT idx FROM user WHERE username = ?", (username,)).fetchone()
+            db.execute(
+                "SELECT idx FROM user WHERE username = ?", (username,)
+            ).fetchone()
             is not None
         ):
             error = f"User {username} is already registered"
@@ -113,11 +126,11 @@ def signin():
 
     return render_template("auth/signin.html")
 
+
 @auth.route("/addkey")
 def add_more_key():
     g.wallet.add_newkey_from_master()
     return redirect(url_for("rawapi.tx_interface"))
-
 
 
 @auth.route("/logout")

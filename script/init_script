@@ -1,13 +1,15 @@
 #!/bin/bash
 
 
-if ! options=$(getopt -o '' --long local,new,ws:,http: -- "$@")
+if ! options=$(getopt -o '' --long local,new,ws:,http:,peers: -- "$@")
 then
-    echo "Usage: up [--new][--ws <port>][--http <port>]
+    echo "Usage: init_script [--local] [--new] [--ws <port>] [--http <port>] [--peers '[<peer>, ...]']
 
-    --new : Initialize DAG program
+    --local : Start DAG program as localhost
+    --new : Start DAG program with DB initialization
     --ws : Define Websocket server port
     --http : Define HTTP-RPC server port
+    --peers : Define peers list (e.g. '[ws://127.0.0.1:16002, ws://127.0.0.1:16003]')
     "
     exit 1
 fi
@@ -30,8 +32,11 @@ while true; do
         --http)
             HTTP_PORT=$2
             shift 2 ;;
+        --peers)
+            PEERS=$2
+            shift 2 ;;
         --)
-            source ./script/set_port --http $HTTP_PORT
+            source ./script/set_port --http $HTTP_PORT -p $P2P_PORT
             shift
             break ;;
     esac
@@ -44,14 +49,24 @@ if [[ $NEW == "true" ]] ; then
     flask init-db
 fi
 
-# python ./p2p_srv.py --port $P2P_PORT &
-# flask run -p $HTTP_PORT &
-if [[ $LOCAL == "true" ]]; then
-    echo " * Open as localhost"
-    flask run -p $HTTP_PORT
-else
-    echo " * Open as product server"
-    flask run --host=0.0.0.0 -p $HTTP_PORT
-fi
+export PEERS=$PEERS
+echo $PEERS
+# API_PID=
+# mkdir -p ./logs
+# if [[ $LOCAL == "true" ]]; then
+#     echo " * Open as localhost"
+#     flask run -p $HTTP_PORT &
+#     API_PID=$!
+# else
+#     echo " * Open as product server"
+#     flask run --host=0.0.0.0 -p $HTTP_PORT > "logs/API$HTTP_PORT" 2>&1 &
+#     API_PID=$!
+# fi
+# python ./p2p_srv.py --port $P2P_PORT > "logs/P2P$P2P_PORT" 2>&1 &
+# P2P_PID=$!
 
-echo " * Initialize KU-DAG"
+# echo " * Initialize KU-DAG & P2P Server"
+# echo "Use './script/kill_server' to stop services"
+# mkdir -p ./script/killps
+# printf "#!/bin/bash\nkill -15 $API_PID $P2P_PID" > ./script/killps/$HTTP_PORT
+# chmod +x ./script/killps/$HTTP_PORT

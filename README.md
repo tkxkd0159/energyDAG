@@ -26,6 +26,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 # Setting
 ## Install
 ```
+conda env create -f environment.yml
 pip install -e ./kudag
 pip install -e ./dagapi
 
@@ -34,24 +35,20 @@ pip install -e ./dagapi
 ## Server Up & Down
 ```bash
 conda activate energy
-./script/init_script --new --http <port> --local
 
-./script/init_script --http <port> --local
-python p2p_srv.py --port <port>
+# 1. Start DAG service
+./script/init_script --http <API_PORT> --ws <P2P_PORT> --local --peers <peer_list> [--new] # init_script --help for more details
 
-# Set genesis
-curl http://127.0.0.1:6001/api/genesis
+# 2. Set genesis after write genesis.json
+# -> All nodes must use the same genesis.json
+curl http://127.0.0.1:<API_PORT>/api/genesis
 
+## 3. Check my peers for P2P networking
+curl http://127.0.0.1:<API_PORT>/api/peers
 
-# Force server down
-kill -15 `ps -e|grep python|awk '{print $1}'`
-kill -15 `ps -e|grep flask|awk '{print $1}'`
-```
-## Add peers for P2P networking
-```bash
-curl -H "Content-Type: application/json" -X POST -d @addr.json http://127.0.0.1:6001/api/peers
-# or
-export PEERS='[ws://127.0.0.1:16002, ws://127.0.0.1:16003]'
+# Force all services down
+./script/kill_server
+
 ```
 ## CSS
 ```

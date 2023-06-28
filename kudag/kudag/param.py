@@ -1,22 +1,35 @@
 from os import getenv
+
 ## crpyto.py
 
-READABLE_ALPHABET = b'123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz' # For base58
+READABLE_ALPHABET = (
+    b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"  # For base58
+)
 
 
 ## dag.py
 DIFFICULTY = 0
 
 
-
 # os.environ['P2P_PORT'] = '6001'
-HTTP_PORT = getenv('HTTP_PORT') if getenv('HTTP_PORT') is not None else '6001'
-if getenv('PEERS') is not None:
-    p = getenv('PEERS')
-    p = p.lstrip('[')
-    p = p.rstrip(']')
-    p = p.split(', ')
-    PEERS = set(p)
-else:
-    PEERS = set(["ws://127.0.0.1:16001", "ws://127.0.0.1:16002"])
+HTTP_PORT = getenv("HTTP_PORT") if getenv("HTTP_PORT") is not None else "6001"
+
+
+def PEERS() -> set:
+    if getenv("PEERS") is not None:
+        peers = getenv("PEERS")
+        peers = peers.lstrip("[")
+        peers = peers.rstrip("]")
+        peers = peers.split(", ")
+        for p in peers:
+            if not p.startswith("ws://"):
+                raise Exception("Peer address must start with ws://")
+        PEERS = set(peers)
+        print(f" * PEERS : {PEERS}", flush=True)
+    else:
+        raise Exception("PEERS is not set")
+
+    return PEERS
+
+
 WSS = set()
