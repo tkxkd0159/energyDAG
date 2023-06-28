@@ -50,23 +50,22 @@ if [[ $NEW == "true" ]] ; then
 fi
 
 export PEERS=$PEERS
-echo $PEERS
-# API_PID=
-# mkdir -p ./logs
-# if [[ $LOCAL == "true" ]]; then
-#     echo " * Open as localhost"
-#     flask run -p $HTTP_PORT &
-#     API_PID=$!
-# else
-#     echo " * Open as product server"
-#     flask run --host=0.0.0.0 -p $HTTP_PORT > "logs/API$HTTP_PORT" 2>&1 &
-#     API_PID=$!
-# fi
-# python ./p2p_srv.py --port $P2P_PORT > "logs/P2P$P2P_PORT" 2>&1 &
-# P2P_PID=$!
+API_PID=
+mkdir -p ./logs
+if [[ $LOCAL == "true" ]]; then
+    echo " * Open as localhost"
+    flask run -p $HTTP_PORT &
+    API_PID=$!
+else
+    echo " * Open as product server"
+    flask run --host=0.0.0.0 -p $HTTP_PORT > "logs/API$HTTP_PORT" 2>&1 &
+    API_PID=$!
+fi
+python ./p2p_srv.py --port $P2P_PORT > "logs/P2P$P2P_PORT" 2>&1 &
+P2P_PID=$!
 
-# echo " * Initialize KU-DAG & P2P Server"
-# echo "Use './script/kill_server' to stop services"
-# mkdir -p ./script/killps
-# printf "#!/bin/bash\nkill -15 $API_PID $P2P_PID" > ./script/killps/$HTTP_PORT
-# chmod +x ./script/killps/$HTTP_PORT
+echo " * Initialize KU-DAG & P2P Server"
+echo "Use './script/kill_server' to stop services"
+mkdir -p ./script/killps
+printf "#!/bin/bash\nkill -15 $API_PID $P2P_PID" > ./script/killps/$HTTP_PORT
+chmod +x ./script/killps/$HTTP_PORT

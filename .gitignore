@@ -2,8 +2,8 @@
 results*
 .vscode
 *.pyc
-
-
+script/killps/
+logs/
 
 
 ### Sass ###
